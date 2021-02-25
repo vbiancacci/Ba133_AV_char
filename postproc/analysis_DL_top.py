@@ -130,9 +130,9 @@ def main():
         procdf['energy']=procdf['energy']*1000
    
     print(procdf['energy'])
-    print(procdf['energy'][1764])
-    print(procdf['energy'][1765])
-    print(procdf['energy'][1766])
+    # print(procdf['energy'][1764])
+    # print(procdf['energy'][1765])
+    # print(procdf['energy'][1766])
 
     procdf.to_hdf(hdf5_path+'processed/valentina_script/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'.hdf5', key='procdf', mode='w')
     #procdf.to_hdf('output/processed_FCCD_'+MC_file_id+'_'+smear+'_'+str(fFCCD).replace(".","")+'fccd_'+str(fDLTp).replace(".","")+'dlt.hdf5', key='procdf', mode='w')
@@ -193,8 +193,11 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
             ])
     
     r_hits=np.sqrt(detector_hits.x**2+detector_hits.y**2)
-    z_hits=detector_hits.z-7.0
+    #z_hits=detector_hits.z-7.0
+    z_hits=detector_hits.z-offset
     energy_hits=detector_hits.Edep
+    print("energy_hits")
+    print(energy_hits)
     
     energy_hits_FCCD=[]
     for r,z,energy,i in zip(r_hits,z_hits,energy_hits,range(len(energy_hits))):
@@ -203,7 +206,9 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
            print("error ", r, z)
            # return 0
         else:
-            energy_FCCD=GetChargeCollectionEfficiency(fNplus,fBore,r,z,fFCCD,fDLT)*energy
+            print("energy: ", energy)
+            energy_FCCD=GetCCE(fNplus,fBore,r,z,fFCCD,fDLT)*energy
+            print("energy_fccd: ", energy_FCCD)
             energy_hits_FCCD.append(energy_FCCD)
         
     detector_hits_FCCD=detector_hits[['event','step','volID','iRep','x','y','z']]
@@ -302,7 +307,7 @@ def GetDistanceToBore(fBore,r,z):
     return GetMinimumDistance(fBore,np.array([r,z]))
 
 
-def GetChargeCollectionEfficiency(fNplus,fBore,r,z,fFCCD,fDLT):
+def GetCCE(fNplus,fBore,r,z,fFCCD,fDLT):
     distanceToNPlus=GetDistanceToNPlus(fNplus,r,z)
     distanceToBore=GetDistanceToBore(fBore,r,z)
     minDist=min(distanceToBore,distanceToNPlus)

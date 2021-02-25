@@ -225,7 +225,7 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
         plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_datacomparison.png")
 
     else:
-        passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'/passed_cuts_data.json','r')) #passed cuts
+        passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'_ba_top_passed_cuts_data.json','r')) #passed cuts
         df_total_cuts_h5 = read_all_dsp_h5(t2_folder_h5,cuts, passed_cuts = passed_cuts)
         e_ftp_data_cuts = df_total_cuts_h5['e_ftp']
         # df_total_cuts_lh5 = read_all_dsp_lh5(t2_folder_lh5, cuts, passed_cuts=passed_cuts)

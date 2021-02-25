@@ -66,8 +66,7 @@ def main():
         trapE_data = df_total_lh5['trapE']
 
     else:
-        passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'/passed_cuts_data.json','r')) #passed cuts
-
+        passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'_ba_top_passed_cuts_data.json','r')) #passed cuts
         df_total_cuts_h5 = read_all_dsp_h5(t2_folder_h5,cuts, passed_cuts = passed_cuts)
         print("df_total_cuts_h5: ", df_total_cuts_h5)
 
