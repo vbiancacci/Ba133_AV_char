@@ -1,0 +1,62 @@
+{
+    "Th": [
+        {
+            "Mean - Resting Baseline": {
+                "upper": 21.769790307731384,
+                "lower": -16.10058035060858,
+                "percent cut": 13.07617282973543
+            }
+        },
+        {
+            "Baseline Standard Deviation": {
+                "upper": 17.41843279658356,
+                "lower": 13.47553578556976,
+                "percent cut": 0.09677738366152293
+            }
+        },
+        {
+            "Pole Zero Standard Deviation": {
+                "upper": 18.504941021054666,
+                "lower": 13.63267036810549,
+                "percent cut": 2.1287109576968564
+            }
+        },
+        {
+            "Pole Zero Slope": {
+                "upper": 0.01789996868559019,
+                "lower": -0.02017616808974044,
+                "percent cut": 0.004013580998790565
+            }
+        }
+    ],
+    "Ba": [
+        {
+            "Mean - Resting Baseline": {
+                "upper": 24.875981247602247,
+                "lower": -23.782580053983473,
+                "percent cut": 18.30403776844219
+            }
+        },
+        {
+            "Baseline Standard Deviation": {
+                "upper": 18.913834233699077,
+                "lower": 15.196456293644673,
+                "percent cut": 5.313278646269055
+            }
+        },
+        {
+            "Pole Zero Standard Deviation": {
+                "upper": 19.8026482243953,
+                "lower": 15.881716094452358,
+                "percent cut": 4.177953033639779
+            }
+        },
+        {
+            "Pole Zero Slope": {
+                "upper": 0.018523994442708237,
+                "lower": -0.02012369835812543,
+                "percent cut": 0.004409031505356408
+            }
+        }
+    ]
+}
