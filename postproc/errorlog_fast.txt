@@ -1,0 +1,16 @@
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:168: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 351, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 88, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 196, in FCCD_cut
+    CCEs = GetCCE(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 336, in GetCCE
+    if (minDist < 0):
+NameError: name 'minDist' is not defined

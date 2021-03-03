@@ -1,18 +1,12 @@
 import numpy as np
 import pandas as pd
-#import vectormath as vmath
 import math
 import sys 
-#import yaml - cant install
 import h5py
 import random
 import glob
-#import uproot - cant install
 from datetime import datetime
 import json
-#from ROOT import TCanvas, TPad, TFormula, TF1, TPaveLabel, TH1F, TFile, TMath
-
-
 
 def main():
 
@@ -24,28 +18,26 @@ def main():
     print("")
 
     if(len(sys.argv) != 6):
-        print('Usage: python analysis_DL_top.py /lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf detectors/I02160A/constants_I02160A.json smear(g/g+l/n->gaussian/gaussian+lowenergy/none) FCCD DLT(%)')
+        print('Example usage: python analysis_DL_top.py lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5 detectors/I02160A/constants_I02160A.json g 0.74 0.5')
         sys.exit()
 
     print("start...")
 
     MC_raw = sys.argv[1]    #inputfile - e.g. "/lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5"
     conf_path = sys.argv[2]     #detector geometry - e.g. detectors/I02160A/constants_I02160A.json
-    smear=str(sys.argv[3])      #energy smearing (g/n) - e.g. g
+    smear=str(sys.argv[3])      #energy smearing (g/n) smear(g/g+l/n->gaussian/gaussian+lowenergy/none) - e.g. g
     fFCCD=float(sys.argv[4])    #FCCD thickness - e.g. 0.74
-    fDLTp=float(sys.argv[5])    #DL fraction - e.g. 0.5
+    fDLTp=float(sys.argv[5])    #DL fraction % - e.g. 0.5
 
     MC_file_id = "IC160A_ba_top_81mmNEW8_01" #need to automate this part
 
-    print("MC raw: ", MC_raw)
-    print("MC_file_ID: ", MC_file_id)
+    print("MC base file ID: ", MC_file_id)
     print("geometry conf_path: ", conf_path)
     print("resolution smearing: ", smear)
     print("FCCD: ", fFCCD)
     print("DLF: ", fDLTp)
     
     fDLT=fFCCD*fDLTp #dl thickness?
-
 
     #read config geometry for detector
     with open(conf_path) as json_file:
@@ -69,7 +61,6 @@ def main():
     boreRadius = r_c
     boreDepth = h_c
                  
-
     #Open base MC file
     hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/"
 
@@ -104,12 +95,9 @@ def main():
     procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep'], as_index=False)['Edep'].sum())
     procdf = procdf.rename(columns={'iRep':'detID', 'Edep':'energy'})
     procdf = procdf[procdf.energy!=0]    
-    print("procdf")
-    print(procdf)
 
     # apply energy resolution function - explain these?
     if (smear=='g' or smear=='G'):
-        #print(procdf['energy'])
         procdf['energy']=procdf['energy']*1000+(f_smear(procdf['energy']*1000))/2.355*np.random.randn(len(procdf['energy']))
     elif (smear=='g+l' or smear=='G+L'):
         procdf['energy']=procdf['energy']*1000+f_random(f_smear(procdf['energy']*1000)/2.355)
@@ -118,8 +106,7 @@ def main():
    
     print(procdf['energy'])
 
-    procdf.to_hdf(hdf5_path+'processed/valentina_script/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'.hdf5', key='procdf', mode='w')
-    
+    procdf.to_hdf(hdf5_path+'processed/valentina_script/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'_fast.hdf5', key='procdf', mode='w')
     
     print("done")
     print("time elapsed: ")
@@ -155,8 +142,7 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
     boreDepth = h_c
     
     
-    
-    
+    #create vectors describing detector edges
     if(coneHeight==0):
         fNplus=np.array([
             [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
@@ -184,45 +170,26 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
     detector_hits['r'] = r
     print("detector_hits with r: ", detector_hits)
 
-
     #first remove any errors/accidental deposits outside detector volume
     detector_hits = detector_hits.drop(detector_hits[detector_hits.r>radius].index)
     detector_hits = detector_hits.drop(detector_hits[detector_hits.z-offset>height].index)
     print("detector hits after removing accidental events outside detector volume:")
     print(detector_hits)
 
-    
+    #CCEs
     Edep = detector_hits.Edep
-    #print("Edep: ", Edep)
     r = detector_hits.r
-    #print("r: ", r)
     z_minusoffset = detector_hits.z - offset
-    #print("z_minusoffset: ", z_minusoffset)
 
-    CCEs = list(map(GetCCE, [fNplus]*len(r),[fBore]*len(r),r,z_minusoffset, [fFCCD]*len(r), [fDLT]*len(r)))
+    #CCEs = list(map(GetCCE, [fNplus]*len(r),[fBore]*len(r),r,z_minusoffset, [fFCCD]*len(r), [fDLT]*len(r)))
     
-    # CCEs = GetCCE(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
     #print("CCEs: ", CCEs)
     CCEs = np.array(CCEs)
     Edep_FCCD = CCEs*Edep
     #print("Edep_FCCD: ", Edep_FCCD)
     detector_hits['Edep'] = Edep_FCCD
     print("detector_hits with Edep FCCD: ", detector_hits)
-    
-    # Edep_FCCD=[]
-    # for r_i,z_i,Edep_i,i in zip(r,z_minusoffset,Edep,range(len(Edep))):
-    
-    #     #print("energy: ", energy)
-    #     Edep_FCCD_i=GetCCE(fNplus,fBore,r_i,z_i,fFCCD,fDLT)*Edep_i
-    #     #print("energy_fccd: ", energy_FCCD)
-    #     Edep_FCCD.append(Edep_FCCD_i)
-        
-    # detector_hits_FCCD=detector_hits[['event','step','volID','iRep','x','y','z']]
-    # detector_hits_FCCD['Edep']=np.array(Edep_FCCD)
-    # #with open("output.txt", "w") as text_file_2:
-    # #    for i in range(len(energy_hits)):
-    # #        text_file_2.write("%f \t %f \t %f \t %f \t %f \n" % (i,energy_hits.iloc[i],energy_hits_FCCD[i],detector_hits.Edep.iloc[i],detector_hits_FCCD.Edep.iloc[i]))
-
 
     return detector_hits
 
@@ -233,51 +200,9 @@ def f_smear(x):
     return np.sqrt(a+b*x)
 
 
-def FCCDBore(x,fDLT,fFCCD):
-    if(x<=fDLT/2):
-        return 0.*x
-    elif(fDLT!=fFCCD and x>fDLT/2. and x<fFCCD/2.):
-        return 2./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT)
-    else:
-        return 1.+0.*x
-
-def FCCDOuter(x,fDLT,fFCCD):
-    if(x<=fDLT):
-        return 0.*x
-    elif(fDLT!=fFCCD and x>fDLT and x<fFCCD):
-        return 1./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT)
-    else:
-        return 1.+0.*x
-
-
-#par_fit=[593929.434376, 1.168730, 2612.961984, 6765.938650, 3.980619, 0.447762] #change
-
-'''
-def f_random(sigma_r):
-    f_smear_random_tot=list()
-    for s in sigma_r:
-        function_smear=TFormula("function_smear","([3]* [0]/(2. *  [4]) * exp( (x- [2])/ [4] +  [5]* [5]/(2. * [4]* [4]) ) * TMath::Erfc( (x- [2])/(sqrt(2)*  [5]) +  [5]/(sqrt(2) *  [4]))+  [0] / ( [1] * sqrt(2. * pi)) * exp( -1. * (x -  [2]) * (x -  [2]) / (2. *  [1] *  [1])) )/( [0]*(1.+ [3]))")
-        f_smear_random=TF1("smear","function_smear",-100,+100,6)
-        A_g, sigma_g, mu_g, B_tail, C, D = par_fit
-        A=1
-        mu=0
-        R=B_tail/A_g
-        f_smear_random.SetParameters(A,s,mu,R,C,D)
-        smear_v=f_smear_random.GetRandom()
-        f_smear_random_tot.append(smear_v)
-    return f_smear_random_tot
-'''
-#f =lambda x: (p[3]* p[0]/(2. *  p[4]) * exp( (x- p[2])/ p[4] +  p[5]* p[5]/(2. * p[4]* p[4]) ) * TMath::Erfc( (x- p[2])/(sqrt(2)*  p[5]) +  p[5]/(sqrt(2) *  p[4]))+  p[0] / ( p[1] * sqrt(2. * pi)) * exp( -1. * (x -  p[2]) * (x -  p[2]) / (2. *  p[1] *  p[1])) )/( p[0]*(1.+ p[3])) 
-#    A_g, sigma_g, mu_g, B_tail, C, D = par_fit
-#    A=1
-#    mu=0
-#    R=B_tail/A_g
-#    p=[A,sigma_r,mu,R,C,D]
-    
-
-
 def length_np(v:np.array):
-    return sum(v*v);
+    return sum(v*v)
+
 
 class TwoDLine():
     def __init__(self, p1:np.array, p2:np.array):
@@ -293,56 +218,134 @@ class TwoDLine():
     def real_distance(self,v:np.array):
         return math.sqrt(length_np(self.distance(v)-v))
    
+    def projections(self, v:np.array):
+        #= projection, returns coordinates of projected point
+        #v = array of points
+        no_points = max(v.shape)
+        print("no_points: ", no_points)
+        p1, p2 = self.p1, self.p2
+        p1s, p2s = np.array([self.p1]*no_points), np.array([self.p2]*no_points)
+        lengths = np.array([self.length()]*no_points)
+        print("lengths.shape: ", lengths.shape)
+        print(lengths)
+        #print("lengths.type: ", lengths.type)
+        zeros, ones = np.zeros(no_points), np.ones(no_points)
+        dot_products = np.sum((v-p1s)*(p2s-p1s), axis = 1) #= rirj+zizj for each point
+        print("dot_products.shape: ", dot_products.shape)
+        #print("dot_products.type: ", dot_products.type)
+        # dot_poducts_over_lengths = dot_products/lengths
+        # dot_poducts_over_lengths = np.divide(dot_products,lengths)
+        c = (np.maximum(zeros,np.minimum(dot_products/lengths,ones)))
+        print("c.shape: ", c.shape)
+        print("c[:,None].shape: ", (c[:,None]).shape)
+        projections = p1s + (p2s-p1s)*c[:,None]
+        print("projections.shape: ", projections.shape)
+        return projections
+
+    def real_distances(self,v:np.array):
+        #returns distances from projected 
+        #v = array of points
+        displacements = self.projections(v)-v
+        real_distances = np.linalg.norm(displacements, axis = 1)
+        print("real_distances.shape: ", real_distances.shape)
+        return real_distances
 
 
-#def GetMinimumDistance(chain,point:np.array):
-def GetMinimumDistance(chain,point):
-    if (len(chain)==0):
+def GetMinimumDistances(chain,points:np.array):
+    
+    if (len(chain)==0): #what is this condition for?
         return 0
 
-    # print("chain: ", chain)
-    # print("chain[0][0]: ", chain[0][0])
-    # print("len(chain): ", len(chain))
-    # print("point: ", point)
+    print("chain: ", chain)
+    print("chain[0][0]: ", chain[0][0])
+    print("len(chain): ", len(chain))
+    print("len(points)")
+    print(len(points))
     
+
+    #distance=chain[0][0].real_distance(point)
+    #distances = ([chain[0][0]]*len(point)).real_distance(point)
+    #distances = [chain[0][0].real_distance(point_i) for point_i in point] #[r for r in relationship_list if r.diff > 1]
     
-    distance=chain[0][0].real_distance(point)
+    real_distances = chain[0][0].real_distances(points)
     
+    print("len(real_distances)")
+    print(len(real_distances))
+    print("real_distances[0]")
+    print(real_distances[0])
+
     for entry in chain:
-        distance=min(distance,entry[0].real_distance(point))
-    return distance
+        print("entry: ", entry)
+        #distance=min(distance,entry[0].real_distance(point))
+        #distances=[min(distance,entry[0].real_distance(point[index])) for index, distance in enumerate(distances)]
+        real_distances = np.minimum(real_distances,entry[0].real_distances(points))
+
+    print("real_distances[0]")
+    print(real_distances[0])
+    return real_distances
  
 
-def GetDistanceToNPlus(fNPlus,r,z):
-    return GetMinimumDistance(fNPlus,np.array([r,z]))
+def GetDistancesToNPlus(fNPlus,r,z):
+    points = np.array(list(zip(r, z)))
+    print("points[0]: ", points[0])
+    return GetMinimumDistances(fNPlus,points)
+
+def GetDistancesToBore(fBore,r,z):
+    points = np.array(list(zip(r, z)))
+    return GetMinimumDistances(fBore,points)
 
 
-def GetDistanceToBore(fBore,r,z):
-    return GetMinimumDistance(fBore,np.array([r,z]))
+def FCCDBore(x,fDLT,fFCCD):
+
+    #x= distances to fBore
+
+    #initialise array of CCEs
+    CCEs = np.ones(x.shape[0])
+
+    #Set CCE=0 for events in DL
+    CCEs = np.where(x <= fDLT/2, 0, CCEs)
+
+    #Set linear model CCE for events in TL
+    CCEs = np.where((fDLT!=fFCCD)&(x>fDLT/2)&(x<fFCCD/2), 2./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
+
+    return CCEs
+
+def FCCDOuter(x,fDLT,fFCCD):
+
+    #x = distances to NPlus
+
+    #initialise array of CCEs
+    CCEs = np.ones(x.shape[0])
+
+    #Set CCE=0 for events in DL
+    CCEs = np.where(x <= fDLT, 0, CCEs)
+
+    #Set linear model CCE for events in TL
+    CCEs = np.where((fDLT!=fFCCD)&(x>fDLT)&(x<fFCCD), 1./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
+
+    return CCEs
+
+def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
+
+    print("fNplus")
+    print(fNplus)
+    print("fBore")
+    print(fBore)
+
+    print("getting distances to Nplus...")
+    distancesToNPlus=GetDistancesToNPlus(fNplus,r,z)
+    print("getting distances to fBore...")
+    distancesToBore=GetDistancesToBore(fBore,r,z)
+
+    # minDists=np.minimum(distancesToBore,distancesToNPlus)
+    # if (minDist < 0):
+    #     return 0
 
 
-def GetCCE(fNplus,fBore,r,z,fFCCD,fDLT):
-
-    # print("fNplus")
-    # print(fNplus)
-    # print("fBore")
-    # print(fNplus)
-
-
-    distanceToNPlus=GetDistanceToNPlus(fNplus,r,z)
-    distanceToBore=GetDistanceToBore(fBore,r,z)
-    minDist=min(distanceToBore,distanceToNPlus)
-    if (minDist < 0):
-        return 0
-    return min(FCCDBore(distanceToBore,fDLT,fFCCD),FCCDOuter(distanceToNPlus,fDLT,fFCCD))
-    #elif(minDist==distanceToBore):
-    #    return FCCDBore(minDist,fDLT,fFCCD) 
-    #else:
-    #    return FCCDOuter(minDist,fDLT,fFCCD) 
-
-
-
-##########################################################################
+    CCEs = np.minimum(FCCDBore(distancesToBore,fDLT,fFCCD),FCCDOuter(distancesToNPlus,fDLT,fFCCD))
+   
+    print("CCEs.shape: ", CCEs.shape)
+    return CCEs
 
    
 

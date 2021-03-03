@@ -1,0 +1,21 @@
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top.py:180: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+/var/spool/SGE/lf/lfc158/job_scripts/3231415: line 9: 0.25: command not found
+/var/spool/SGE/lf/lfc131/job_scripts/3231508: line 9: 0.25: command not found
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top.py:184: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+/var/spool/SGE/lf/lfc131/job_scripts/3231508: line 11:  9168 Killed                  python ${DIRECTORY}analysis_DL_top.py $MC_RAW $CONF_PATH $SMEAR $fFCCD $fDLTp
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top.py:184: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r

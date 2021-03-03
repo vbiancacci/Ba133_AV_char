@@ -1,0 +1,72 @@
+
+date and time = 01/03/2021 11:12:12
+
+start...
+MC base file ID:  IC160A_ba_top_81mmNEW8_01
+geometry conf_path:  /lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/detectors/I02160A/constants_I02160A.json
+resolution smearing:  g
+FCCD:  0.74
+DLF:  0.5
+detector_hits with r:               event  step      Edep  ...         y         z          r
+1                9     8  0.002478  ...  2.662650  7.626071  10.702776
+2                9     1  0.008589  ...  2.662557  7.626008  10.702746
+3                9     1  0.022753  ...  2.665724  7.628400  10.704190
+4                9     2  0.003335  ...  2.664974  7.628596  10.704699
+5                9     3  0.019011  ...  2.664667  7.628760  10.704386
+...            ...   ...       ...  ...       ...       ...        ...
+82486343  99999995     1  0.005631  ... -0.394859  7.741264  10.160399
+82486344  99999995     1  0.005408  ... -0.399709  7.725880  10.162199
+82486345  99999995     1  0.004491  ... -0.404462  7.743026  10.158264
+82486346  99999995     1  0.003464  ... -0.385325  7.734854  10.170773
+82486347  99999995     1  0.014961  ... -0.387399  7.716270  10.191588
+
+[76560999 rows x 9 columns]
+detector hits after removing accidental events outside detector volume:
+             event  step      Edep  ...         y         z          r
+1                9     8  0.002478  ...  2.662650  7.626071  10.702776
+2                9     1  0.008589  ...  2.662557  7.626008  10.702746
+3                9     1  0.022753  ...  2.665724  7.628400  10.704190
+4                9     2  0.003335  ...  2.664974  7.628596  10.704699
+5                9     3  0.019011  ...  2.664667  7.628760  10.704386
+...            ...   ...       ...  ...       ...       ...        ...
+82486343  99999995     1  0.005631  ... -0.394859  7.741264  10.160399
+82486344  99999995     1  0.005408  ... -0.399709  7.725880  10.162199
+82486345  99999995     1  0.004491  ... -0.404462  7.743026  10.158264
+82486346  99999995     1  0.003464  ... -0.385325  7.734854  10.170773
+82486347  99999995     1  0.014961  ... -0.387399  7.716270  10.191588
+
+[76560848 rows x 9 columns]
+points[0]:  [10.7027761   0.62607135]
+chain:  [[<__main__.TwoDLine object at 0x2b170f6bcd90>]
+ [<__main__.TwoDLine object at 0x2b170f6bcc50>]
+ [<__main__.TwoDLine object at 0x2b170f6bc890>]
+ [<__main__.TwoDLine object at 0x2b170f6bce50>]]
+chain[0][0]:  <__main__.TwoDLine object at 0x2b170f6bcd90>
+len(chain):  4
+len(point)
+76560848
+len(distances)
+76560848
+distances[0]
+64.95132939738606
+entry:  [<__main__.TwoDLine object at 0x2b170f6bcd90>]
+entry:  [<__main__.TwoDLine object at 0x2b170f6bcc50>]
+entry:  [<__main__.TwoDLine object at 0x2b170f6bc890>]
+entry:  [<__main__.TwoDLine object at 0x2b170f6bce50>]
+distances[0]
+0.6260713454049238
+chain:  [[<__main__.TwoDLine object at 0x2b170f6bc8d0>]
+ [<__main__.TwoDLine object at 0x2b170f6bcad0>]]
+chain[0][0]:  <__main__.TwoDLine object at 0x2b170f6bc8d0>
+len(chain):  2
+len(point)
+76560848
+len(distances)
+76560848
+distances[0]
+6.052776100996256
+entry:  [<__main__.TwoDLine object at 0x2b170f6bc8d0>]
+entry:  [<__main__.TwoDLine object at 0x2b170f6bcad0>]
+distances[0]
+6.052776100996256
+0 is fDLTp
