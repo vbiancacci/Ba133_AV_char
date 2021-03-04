@@ -1,17 +1,12 @@
 import numpy as np
 import pandas as pd
-#import vectormath as vmath
 import math
 import sys 
-#import yaml - cant install
 import h5py
 import random
 import glob
-#import uproot - cant install
 from datetime import datetime
 import json
-#from ROOT import TCanvas, TPad, TFormula, TF1, TPaveLabel, TH1F, TFile, TMath
-
 
 
 def main():

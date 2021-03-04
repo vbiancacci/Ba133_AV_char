@@ -16,48 +16,53 @@ from Ba133_data_AV_analysis import *
 
 def main(): 
 
-    #print date and time for log:
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
+    #print date and time for log: 
+    t0 = datetime.now()
+    dt_string = t0.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
     print("")
     print("date and time =", dt_string)	
     print("")
 
     parser = argparse.ArgumentParser(description='Infer FCCD for a particular detector, with cuts or not')
-    parser.add_argument('--simID', action="store_true", default="IC160A_ba_top_81mmNEW8_01_newresolution")
+    #parser.add_argument('--simID', action="store_true", default="IC160A_ba_top_81mmNEW8_01_newresolution")
+    parser.add_argument('--simID', action="store_true", default="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry_g")
     parser.add_argument('--detector', action="store_true", default="I02160A")
     parser.add_argument('--cuts', action="store", type=bool, default = False)
     args = parser.parse_args()
     MC_file_id, detector, cuts = args.simID, args.detector, args.cuts
     print("MC file ID: ", MC_file_id)
     print("detector: ", detector)
-    print("cuts: ", str(cuts))
-    print("")
+    print("applying cuts: ", str(cuts))
+
+    print("start...")
 
     #Get O_ba133 for each FCCD
-    FCCD_list = [0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3] #mm
+    FCCD_list = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3.0] #mm
     O_Ba133_list = []
     O_Ba133_err_list = []
+    DLF = 1.0 #considering 0 TL
 
     for FCCD in FCCD_list:
 
         #print("FCCD: ", FCCD)
         
         if cuts == False:
-            with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_dlt_observables.json') as json_file:
+            with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_DLF'+str(DLF)+'_dlt_observables.json') as json_file:
                 dlt_obs = json.load(json_file)
                 O_Ba133 = dlt_obs['O_Ba133']
                 O_Ba133_list.append(O_Ba133)
                 O_Ba133_err = dlt_obs['O_Ba133_err']
                 O_Ba133_err_list.append(O_Ba133_err)
         else:
-            with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_dlt_observables_cuts.json') as json_file:
+            with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_DLF'+str(DLF)+'_dlt_observables_cuts.json') as json_file:
                 dlt_obs = json.load(json_file)
                 O_Ba133 = dlt_obs['O_Ba133']
                 O_Ba133_list.append(O_Ba133)
                 O_Ba133_err = dlt_obs['O_Ba133_err']
                 O_Ba133_err_list.append(O_Ba133_err)
 
+
+    #Get ratio for data
     if cuts == False:
         with open("../data/detectors/"+detector+"/dlt_observables.json") as json_file:
             dlt_obs = json.load(json_file)
@@ -127,6 +132,7 @@ def main():
         with open("detectors/"+detector+"/"+MC_file_id+"_FCCD_data_cuts.json", "w") as outfile: 
             json.dump(FCCD_data_dict, outfile)
 
+    print("done")
 
 def exponential_decay(x, a, b ,c):
     f = a*np.exp(-b*x) + c

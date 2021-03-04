@@ -17,14 +17,16 @@ def main():
 
     
     #print date and time for log: 
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
+    t0 = datetime.now()
+    dt_string = t0.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
     print("")
     print("date and time =", dt_string)	
     print("")
 
+
     parser = argparse.ArgumentParser(description='Fit and count MC gamma line for Ba for a particular detector, with cuts or not')
-    parser.add_argument('--simID', action="store_true", default="IC160A_ba_top_81mmNEW8_01_newresolution")
+    #parser.add_argument('--simID', action="store_true", default="IC160A_ba_top_81mmNEW8_01_newresolution")
+    parser.add_argument('--simID', action="store_true", default="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry_g")
     parser.add_argument('--detector', action="store_true", default="I02160A")
     parser.add_argument('--cuts', action="store", type=bool, default = False)
     args = parser.parse_args()
@@ -33,10 +35,15 @@ def main():
     print("detector: ", detector)
     print("applying cuts: ", str(cuts))
 
-    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/processed/" #path to processed MC hdf5 files
-    MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5' #no FCCD
+    print("start...")
+
+    #hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/processed/" #path to processed MC hdf5 files
+    #MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5' #no FCCD
+    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/processed/" #path to processed MC hdf5 files
+
     binwidth = 0.15 #keV
 
+    #initialise directories to save outputs if not already existing
     if not os.path.exists("detectors/"+detector+"/plots"):
         os.makedirs("detectors/"+detector+"/plots")
 
@@ -46,9 +53,10 @@ def main():
     print("")
     print("Process each DLT (no TL)...")
 
-    FCCD_list = [0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3] #make this an input argument
-    FCCD_list = [0.744] #best fit, no cuts
-    FCCD_list = [0.698] #best fit, cuts
+    FCCD_list = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3.0] #make this an input argument?
+    # FCCD_list = [0.744] #best fit, no cuts - NEW8
+    # FCCD_list = [0.698] #best fit, cuts - NEW8
+
     for FCCD in FCCD_list:
         print("")
         print("FCCD: ", FCCD)
@@ -57,6 +65,8 @@ def main():
             
 
     print("done")
+    print("time elapsed: ")
+    print(datetime.now() - t0)
 
 
 def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
@@ -65,14 +75,17 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
     #_______plot full spectrum___________
     print("plotting whole simulated spectrum...")
 
-    if FCCD == 0:
-        MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5'
-    else:
-        MC_file = hdf5_path+"processed_detector_"+MC_file_id+'_FCCD'+str(FCCD)+'mm.hdf5'
+    # if FCCD == 0:
+    #     MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5'
+    # else:
+    #     MC_file = hdf5_path+"processed_detector_"+MC_file_id+'_FCCD'+str(FCCD)+'mm.hdf5'
+    
+    DLF = 1.0 #for all, not considering TL currently
+    MC_file = hdf5_path+"processed_detector_"+MC_file_id+'_FCCD'+str(FCCD)+'mm_DLF'+str(DLF)+'.hdf5'    
 
     df =  pd.read_hdf(MC_file, key="procdf")
     energies = df['energy']
-    energies = energies*1000
+    #energies = energies*1000 - not needed anymore
     no_events = energies.size #=sum(counts)
     print("No. events: ", no_events) 
     bins = np.arange(min(energies), max(energies) + binwidth, binwidth)
@@ -93,7 +106,7 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
     plt.yscale("log")
     plt.xlabel("Energy [keV]")
     plt.ylabel("Counts")
-    plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+'_FCCD'+str(FCCD)+'mm_356keV.png')
+    plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+'_FCCD'+str(FCCD)+'mm_DLF'+str(DLF)+'_356keV.png')
 
     C_356, C_356_err = gauss_count(a, b, c, np.sqrt(pcov[0][0]),  np.sqrt(pcov[1][1]), np.sqrt(pcov[2][2]), binwidth)
     print("gauss count 356keV: ", C_356, " +/- ", C_356_err )
@@ -110,7 +123,7 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
     plt.yscale("log")
     plt.xlabel("Energy [keV]")
     plt.ylabel("Counts")
-    plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+'_FCCD'+str(FCCD)+'mm_81keV.png')
+    plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+'_FCCD'+str(FCCD)+"mm_DLF"+str(DLF)+'_81keV.png')
 
     R = 2.65/32.9
     C_81, C_81_err = gauss_count(a, b, c, np.sqrt(pcov[0][0]),  np.sqrt(pcov[1][1]), np.sqrt(pcov[2][2]), binwidth)
@@ -222,7 +235,7 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
         plt.xlim(0, 450)
         plt.yscale("log")
         plt.legend(loc = "lower left")
-        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_datacomparison.png")
+        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_datacomparison.png")
 
     else:
         passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'_ba_top_passed_cuts_data.json','r')) #passed cuts
@@ -255,7 +268,7 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
         plt.xlim(0, 450)
         plt.yscale("log")
         plt.legend(loc = "lower left")
-        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_datacomparison_cuts.png")
+        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_datacomparison_cuts.png")
 
     
     #Save count values to json file
@@ -282,10 +295,10 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
     }
 
     if cuts == False:
-        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_dlt_observables.json", "w") as outfile: 
+        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_dlt_observables.json", "w") as outfile: 
             json.dump(dlt_observables, outfile)
     else:
-        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_dlt_observables_cuts.json", "w") as outfile: 
+        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_dlt_observables_cuts.json", "w") as outfile: 
             json.dump(dlt_observables, outfile)
 
 
@@ -330,9 +343,9 @@ def process_FCCDs(FCCD, MC_file_id, detector, cuts, hdf5_path, binwidth):
         print(Data_MC_ratios_df)
 
         if cuts == False:
-            Data_MC_ratios_df.to_csv("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DataMCRatios.csv", index=False)
+            Data_MC_ratios_df.to_csv("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_DataMCRatios.csv", index=False)
         else:
-            Data_MC_ratios_df.to_csv("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DataMCRatios_cuts.csv", index=False)
+            Data_MC_ratios_df.to_csv("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_DataMCRatios_cuts.csv", index=False)
 
     return energies, R_simdata_356_counts #for creating comparison graph
 

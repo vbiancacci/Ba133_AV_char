@@ -5,6 +5,8 @@ from datetime import datetime
 import argparse
 
 
+#THIS IS OLD CODE - NOW REPLACED BY analysis_DL_top_fast.py
+
 def main():  
 
     #print date and time for log:

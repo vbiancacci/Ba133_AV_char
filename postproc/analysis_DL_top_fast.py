@@ -8,6 +8,9 @@ import glob
 from datetime import datetime
 import json
 
+#FAST version of postproc code for FCCD and DLF implementation
+#takes ~ 12mins per fccd/dlf configuration
+
 def main():
 
     #print date and time for log:
@@ -17,19 +20,21 @@ def main():
     print("date and time =", dt_string)	
     print("")
 
-    if(len(sys.argv) != 6):
-        print('Example usage: python analysis_DL_top.py lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5 detectors/I02160A/constants_I02160A.json g 0.74 0.5')
+    if(len(sys.argv) != 7):
+        #print('Example usage: python analysis_DL_top.py lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5 detectors/I02160A/constants_I02160A.json g 0.74 0.5')
+        print('Example usage: python analysis_DL_top.py /lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry detectors/I02160A/constants_I02160A.json g 0.74 0.5')
         sys.exit()
 
     print("start...")
 
     MC_raw = sys.argv[1]    #inputfile - e.g. "/lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5"
-    conf_path = sys.argv[2]     #detector geometry - e.g. detectors/I02160A/constants_I02160A.json
-    smear=str(sys.argv[3])      #energy smearing (g/n) smear(g/g+l/n->gaussian/gaussian+lowenergy/none) - e.g. g
-    fFCCD=float(sys.argv[4])    #FCCD thickness - e.g. 0.74
-    fDLTp=float(sys.argv[5])    #DL fraction % - e.g. 0.5
+    MC_file_id = sys.argv[2] #file id for saving output - e.g. IC160A-BA133-uncollimated-top-run0003-81z-newgeometry
+    conf_path = sys.argv[3]     #detector geometry - e.g. detectors/I02160A/constants_I02160A.json
+    smear=str(sys.argv[4])      #energy smearing (g/n) smear(g/g+l/n->gaussian/gaussian+lowenergy/none) - e.g. g
+    fFCCD=float(sys.argv[5])    #FCCD thickness - e.g. 0.74
+    fDLTp=float(sys.argv[6])    #DL fraction % - e.g. 0.5
 
-    MC_file_id = "IC160A_ba_top_81mmNEW8_01" #need to automate this part
+    #MC_file_id = "IC160A_ba_top_81mmNEW8_01" #need to automate this part
 
     print("MC base file ID: ", MC_file_id)
     print("geometry conf_path: ", conf_path)
@@ -60,34 +65,37 @@ def main():
     coneHeight = H_u
     boreRadius = r_c
     boreDepth = h_c
+
+    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/"
                  
     #Open base MC file
-    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/"
 
-    # have to open the input file with h5py (g4 doesn't write pandas-ready hdf5)
-    #g4sfile = h5py.File(hdf5_path+'detector_'+MC_file_id+'.hdf5', 'r')
-    g4sfile = h5py.File(MC_raw, 'r')
-    g4sntuple = g4sfile['default_ntuples']['g4sntuple']
-    g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
+    # # have to open the input file with h5py (g4 doesn't write pandas-ready hdf5)
+    # #g4sfile = h5py.File(hdf5_path+'detector_'+MC_file_id+'.hdf5', 'r')
+    # g4sfile = h5py.File(MC_raw, 'r')
+    # g4sntuple = g4sfile['default_ntuples']['g4sntuple']
+    # g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
 
-    # # build a pandas DataFrame from the hdf5 datasets we will use
-    g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['Edep']['pages']), columns=['Edep']),lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['volID']['pages']),columns=['volID']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['iRep']['pages']),columns=['iRep']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
+    # # # build a pandas DataFrame from the hdf5 datasets we will use
+    # g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['Edep']['pages']), columns=['Edep']),lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['volID']['pages']),columns=['volID']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['iRep']['pages']),columns=['iRep']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
     
+    #if already combined MC pandas df, skip above, and open with pandas directly
+    g4sdf = pd.read_hdf(MC_raw, key="procdf")
+
     # apply E cut / detID cut and sum Edeps for each event using loc, groupby, and sum
     # write directly into output dataframe
     detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)]
     keys = detector_hits.keys()
     no_events =  len(detector_hits) #73565535 rows x 8 columns, len = 73565535, size = 73565535x8
      
-    #apply FCCD (DLT) cut 
-    #FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+    #apply FCCD (DLT) cut ]
     detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
     print("detector_hits_FCCD")
     print(detector_hits_FCCD)
@@ -106,7 +114,8 @@ def main():
    
     print(procdf['energy'])
 
-    procdf.to_hdf(hdf5_path+'processed/valentina_script/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'_fast.hdf5', key='procdf', mode='w')
+    #procdf.to_hdf(hdf5_path+'processed/valentina_script/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'_fast.hdf5', key='procdf', mode='w')
+    procdf.to_hdf(hdf5_path+'raw_MC_combined/processed/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'.hdf5', key='procdf', mode='w')
     
     print("done")
     print("time elapsed: ")
@@ -226,20 +235,20 @@ class TwoDLine():
         p1, p2 = self.p1, self.p2
         p1s, p2s = np.array([self.p1]*no_points), np.array([self.p2]*no_points)
         lengths = np.array([self.length()]*no_points)
-        print("lengths.shape: ", lengths.shape)
-        print(lengths)
+        # print("lengths.shape: ", lengths.shape)
+        # print(lengths)
         #print("lengths.type: ", lengths.type)
         zeros, ones = np.zeros(no_points), np.ones(no_points)
         dot_products = np.sum((v-p1s)*(p2s-p1s), axis = 1) #= rirj+zizj for each point
-        print("dot_products.shape: ", dot_products.shape)
+        # print("dot_products.shape: ", dot_products.shape)
         #print("dot_products.type: ", dot_products.type)
         # dot_poducts_over_lengths = dot_products/lengths
         # dot_poducts_over_lengths = np.divide(dot_products,lengths)
         c = (np.maximum(zeros,np.minimum(dot_products/lengths,ones)))
-        print("c.shape: ", c.shape)
-        print("c[:,None].shape: ", (c[:,None]).shape)
+        # print("c.shape: ", c.shape)
+        # print("c[:,None].shape: ", (c[:,None]).shape)
         projections = p1s + (p2s-p1s)*c[:,None]
-        print("projections.shape: ", projections.shape)
+        # print("projections.shape: ", projections.shape)
         return projections
 
     def real_distances(self,v:np.array):
@@ -247,7 +256,7 @@ class TwoDLine():
         #v = array of points
         displacements = self.projections(v)-v
         real_distances = np.linalg.norm(displacements, axis = 1)
-        print("real_distances.shape: ", real_distances.shape)
+        # print("real_distances.shape: ", real_distances.shape)
         return real_distances
 
 
@@ -256,11 +265,11 @@ def GetMinimumDistances(chain,points:np.array):
     if (len(chain)==0): #what is this condition for?
         return 0
 
-    print("chain: ", chain)
-    print("chain[0][0]: ", chain[0][0])
-    print("len(chain): ", len(chain))
-    print("len(points)")
-    print(len(points))
+    # print("chain: ", chain)
+    # print("chain[0][0]: ", chain[0][0])
+    # print("len(chain): ", len(chain))
+    # print("len(points)")
+    # print(len(points))
     
 
     #distance=chain[0][0].real_distance(point)
@@ -269,19 +278,20 @@ def GetMinimumDistances(chain,points:np.array):
     
     real_distances = chain[0][0].real_distances(points)
     
-    print("len(real_distances)")
-    print(len(real_distances))
-    print("real_distances[0]")
-    print(real_distances[0])
+    # print("len(real_distances)")
+    # print(len(real_distances))
+    # print("real_distances[0]")
+    # print(real_distances[0])
 
     for entry in chain:
-        print("entry: ", entry)
+        # print("entry: ", entry)
         #distance=min(distance,entry[0].real_distance(point))
         #distances=[min(distance,entry[0].real_distance(point[index])) for index, distance in enumerate(distances)]
         real_distances = np.minimum(real_distances,entry[0].real_distances(points))
 
-    print("real_distances[0]")
-    print(real_distances[0])
+    # print("real_distances[0]")
+    # print(real_distances[0])
+
     return real_distances
  
 
@@ -306,7 +316,8 @@ def FCCDBore(x,fDLT,fFCCD):
     CCEs = np.where(x <= fDLT/2, 0, CCEs)
 
     #Set linear model CCE for events in TL
-    CCEs = np.where((fDLT!=fFCCD)&(x>fDLT/2)&(x<fFCCD/2), 2./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
+    if fDLT != fFCCD: #DLF is not 1, i.e. there is a TL
+        CCEs = np.where((x>fDLT/2)&(x<fFCCD/2), 2./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
 
     return CCEs
 
@@ -321,16 +332,17 @@ def FCCDOuter(x,fDLT,fFCCD):
     CCEs = np.where(x <= fDLT, 0, CCEs)
 
     #Set linear model CCE for events in TL
-    CCEs = np.where((fDLT!=fFCCD)&(x>fDLT)&(x<fFCCD), 1./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
+    if fDLT != fFCCD: #DLF is not 1, i.e. there is a TL
+        CCEs = np.where((x>fDLT)&(x<fFCCD), 1./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
 
     return CCEs
 
 def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
 
-    print("fNplus")
-    print(fNplus)
-    print("fBore")
-    print(fBore)
+    # print("fNplus")
+    # print(fNplus)
+    # print("fBore")
+    # print(fBore)
 
     print("getting distances to Nplus...")
     distancesToNPlus=GetDistancesToNPlus(fNplus,r,z)
@@ -344,7 +356,8 @@ def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
 
     CCEs = np.minimum(FCCDBore(distancesToBore,fDLT,fFCCD),FCCDOuter(distancesToNPlus,fDLT,fFCCD))
    
-    print("CCEs.shape: ", CCEs.shape)
+    # print("CCEs.shape: ", CCEs.shape)
+
     return CCEs
 
    
