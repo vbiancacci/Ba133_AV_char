@@ -1,17 +1,16 @@
-# draw energy histograms from each detector
-
-import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 #plt.style.use("mplstyle.txt")
 from datetime import datetime
+import argparse
  
 #import fitting functions
 import sys
-sys.path.append('/lfs/l1/legend/users/aalexander/HADES_detchar/Ba133_analysis/data/')
-from Ba133_dlt_analysis import * 
-from Ba133_dlt_analysis_new import * 
+sys.path.append('../data/')
+from Ba133_data_AV_analysis import * 
+
+#OLD SCRIPT DO NOT USE
 
 def main(): 
 
@@ -22,32 +21,36 @@ def main():
     print("date and time =", dt_string)	
     print("")
 
-    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/processed/"
 
-    if(len(sys.argv) != 2):
-        print('Usage: drawPostProcessed_FCCD.py [e.g. IC160A_ba_top_81mmNEW4_01]')
-        sys.exit()
+    parser = argparse.ArgumentParser(description='Fit and count MC gamma line for Ba for a particular detector, with cuts or not')
+    #parser.add_argument('--simID', action="store_true", default="IC160A_ba_top_81mmNEW8_01_newresolution")
+    parser.add_argument('--simID', action="store_true", default="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry_g")
+    parser.add_argument('--detector', action="store_true", default="I02160A")
+    parser.add_argument('--FCCD', action="store_true", default = 0.71)
+    parser.add_argument('--cuts', action="store", type=bool, default = False)
+    
+    args = parser.parse_args()
+    MC_file_id, detector, cuts = args.simID, args.detector, args.cuts
+    print("MC file ID: ", MC_file_id)
+    print("detector: ", detector)
+    print("fixed FCCD: ", str(FCCD))
+    print("applying cuts: ", str(cuts))
 
-    MC_file_id = sys.argv[1] 
-    MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5'
+    print("start...")
+
+    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/processed/" #path to processed MC hdf5 files
+
+   
+    # MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5'
 
     binwidth = 0.15 #keV
-    #binwidth = 0.1 #keV- new
 
     #_____________PROCESS AND PLOT FCCDS_____________ 
 
     print("")
     print("Process for each DLF...")
 
-    DLF_list = [0,0.2,0.4,0.5,0.6,0.8,1]
-    #DLF_list = [0,0.2,0.4,0.5,0.6,0.8]
-    #DLF_list = [0.5]
-    FCCD = 0.75 #mm, fixed
-    print("FCCD (fixed): ", FCCD)
-
-    #FCCD_list = [0.579] #new4 new resolution
-    #FCCD_list = [0.746] #extrapolated amount new resolution, NEW8
-    
+    DLF_list = [0.0,0.25, 0.5, 0.75, 1.0]
 
     DLF_energies_list = []
     R_simdata_356_counts_list = []
@@ -56,7 +59,6 @@ def main():
 
         print("")
         print("DLF: ", DLF)
-        #energies_TLDL, R_simdata_356, calibrated_energy_data = process_FCCDs(MC_file_id, FCCD, DLF, binwidth)
         energies_TLDL, energy_data, energy_data_cuts, R_simdata_356_counts,R_simdata_356_counts_cuts = process_FCCDs(MC_file_id, FCCD, DLF, binwidth)
         #bins = np.arange(min(energies_TLDL), max(energies_TLDL) + binwidth, binwidth)
         DLF_energies_list.append(energies_TLDL)
@@ -128,7 +130,9 @@ def main():
 def process_FCCDs(MC_file_id, FCCD, DLF, binwidth):
     "process and plot for a list of different FCCDs"
 
-    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/processed/"
+    #hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/processed/"
+    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/processed/" #path to processed MC hdf5 files
+
 
     # #_______plot full spectrum___________
     # print("plotting whole simulated spectrum...")
@@ -137,10 +141,10 @@ def process_FCCDs(MC_file_id, FCCD, DLF, binwidth):
     print("MC file: ",MC_file)
     df =  pd.read_hdf(MC_file, key="procdf")
     energies = df['energy']
-    energies = energies*1000
+    #energies = energies*1000 #dont need anymore
     no_events = energies.size #=sum(counts)
     print("No. events: ", no_events) 
-    bins = np.arange(min(energies), max(energies) + binwidth, binwidth)
+    #bins = np.arange(min(energies), max(energies) + binwidth, binwidth)
     bins = np.arange(0, 450, binwidth)
 
     # fig, ax = plt.subplots()

@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py", line 11, in <module>
+    from Ba133_data_AV_analysis import * 
+ModuleNotFoundError: No module named 'Ba133_data_AV_analysis'
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py", line 11, in <module>
+    from Ba133_data_AV_analysis import * 
+ModuleNotFoundError: No module named 'Ba133_data_AV_analysis'
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py", line 383, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py", line 74, in main
+    energies_FCCD, energy_data, R_simdata_356_FCCD = process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py", line 211, in process_FCCDs
+    with open("../data/detectors/"+detector+"/calibration_coef.json") as json_file:
+FileNotFoundError: [Errno 2] No such file or directory: '../data/detectors/I02160A/calibration_coef.json'
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py:359: RuntimeWarning: divide by zero encountered in double_scalars
+  error = np.sqrt(1/data + 1/MC)
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py:359: RuntimeWarning: divide by zero encountered in double_scalars
+  error = np.sqrt(1/data + 1/MC)
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py:359: RuntimeWarning: divide by zero encountered in double_scalars
+  error = np.sqrt(1/data + 1/MC)
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py:359: RuntimeWarning: divide by zero encountered in double_scalars
+  error = np.sqrt(1/data + 1/MC)
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/drawPostProcessed_FCCD.py:359: RuntimeWarning: divide by zero encountered in double_scalars
+  error = np.sqrt(1/data + 1/MC)

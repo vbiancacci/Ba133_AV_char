@@ -26,12 +26,17 @@ def main():
     files = os.listdir(raw_MC_hdf5_path)
     files = fnmatch.filter(files, "*.hdf5")
     df_list = []
-    df_cuts_list = []
+    g4sfile_list = []
     for file in files:
 
+        print("file: ", str(file))
         g4sfile = h5py.File(raw_MC_hdf5_path+file, 'r')
+        g4sfile_list.append(g4sfile_list)
+        print("g4sfile: ", g4sfile)
+        print(g4sfile.keys())
 
         g4sntuple = g4sfile['default_ntuples']['g4sntuple']
+        print(g4sntuple)
         g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
 
         # # build a pandas DataFrame from the hdf5 datasets we will use
@@ -52,9 +57,20 @@ def main():
     df_total = pd.concat(df_list, axis=0, ignore_index=True)
     print(df_total)
 
+
     #write output
     output_path = "/lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/"
-    df_total.to_hdf(output_path+MC_file_ID+'.hdf5', key='procdf', mode='w')
+
+
+    with h5py.File(output_path+MC_file_ID,mode='w') as h5fw:
+        link_cnt = 0 
+        #for h5name in glob.glob(str(raw_MC_hdf5_path)):
+        for file_name in files:
+            link_cnt += 1
+            h5fw['link'+str(link_cnt)] = h5py.ExternalLink(file_name,'/')   
+
+
+    #df_total.to_hdf(output_path+MC_file_ID+'.hdf5', key='procdf', mode='w')
     
 
 if __name__=="__main__":

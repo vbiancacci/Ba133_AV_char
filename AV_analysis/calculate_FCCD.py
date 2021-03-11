@@ -46,21 +46,12 @@ def main():
 
         #print("FCCD: ", FCCD)
         
-        if cuts == False:
-            with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_DLF'+str(DLF)+'_dlt_observables.json') as json_file:
-                dlt_obs = json.load(json_file)
-                O_Ba133 = dlt_obs['O_Ba133']
-                O_Ba133_list.append(O_Ba133)
-                O_Ba133_err = dlt_obs['O_Ba133_err']
-                O_Ba133_err_list.append(O_Ba133_err)
-        else:
-            with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_DLF'+str(DLF)+'_dlt_observables_cuts.json') as json_file:
-                dlt_obs = json.load(json_file)
-                O_Ba133 = dlt_obs['O_Ba133']
-                O_Ba133_list.append(O_Ba133)
-                O_Ba133_err = dlt_obs['O_Ba133_err']
-                O_Ba133_err_list.append(O_Ba133_err)
-
+        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+'mm_DLF'+str(DLF)+'_dlt_observables.json') as json_file:
+            dlt_obs = json.load(json_file)
+            O_Ba133 = dlt_obs['O_Ba133']
+            O_Ba133_list.append(O_Ba133)
+            O_Ba133_err = dlt_obs['O_Ba133_err']
+            O_Ba133_err_list.append(O_Ba133_err)
 
     #Get ratio for data
     if cuts == False:

@@ -626,9 +626,9 @@ def fit_peak_356_2(key, bins, counts, xmin, xmax):
     eguess = min(ydata) #offset
     p_guess = [aguess,bguess,cguess,dguess,eguess]
     print(p_guess)
-    bounds=([0, 0, 0, 0, -np.inf], [np.inf]*5)
+    bounds=([0, 0, 0, -np.inf, -np.inf], [np.inf]*5)
 
-    popt, pcov = optimize.curve_fit(gaussian_and_bkg_2, xdata, ydata, p0=p_guess, sigma = yerr, maxfev = 10**7, method ="trf", bounds = bounds)
+    popt, pcov = optimize.curve_fit(gaussian_and_bkg_2, xdata, ydata, p0=p_guess, sigma = yerr, maxfev = 10**8, method ="trf", bounds = bounds)
     print(popt)
     a,b,c,d,e = popt[0],popt[1],popt[2],popt[3],popt[4]
 

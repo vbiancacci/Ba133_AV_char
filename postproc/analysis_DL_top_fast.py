@@ -22,7 +22,8 @@ def main():
 
     if(len(sys.argv) != 7):
         #print('Example usage: python analysis_DL_top.py lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5 detectors/I02160A/constants_I02160A.json g 0.74 0.5')
-        print('Example usage: python analysis_DL_top.py /lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry detectors/I02160A/constants_I02160A.json g 0.74 0.5')
+        #print('Example usage: python analysis_DL_top.py /lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry detectors/I02160A/constants_I02160A.json g 0.74 0.5')
+        print('Example usage: python analysis_DL_top.py /lfs/l1/legend/detector_char/enr/hades/simulations/legend-g4simple-simulation/IC-legend/IC160A/Ba133/uncollimated/top/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-00.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-singlefile detectors/I02160A/constants_I02160A.json g 0.74 0.5')
         sys.exit()
 
     print("start...")
@@ -44,58 +45,37 @@ def main():
     
     fDLT=fFCCD*fDLTp #dl thickness?
 
-    #read config geometry for detector
-    with open(conf_path) as json_file:
-        geometry = json.load(json_file)
-        r_c = geometry['r_c'] #cavity radius
-        R_b = geometry['R_b'] #bottom crystal radius  (79.8/2)
-        R_u = geometry['R_u'] #up crystal radius    (75.5/2 )
-        h_c = geometry['h_c'] #cavity height
-        H = geometry['H'] #crystal height
-        H_u = geometry['H_u'] #up crystal height    (65.4-45.3)
-        offset = geometry['offset'] #position of crystal from Alcap end
-
-    #added this - needs checking
-    radius = R_b
-    height = H
-    grooveOuterRadius = 31.0/2 #from my code, from xml file
-    grooveInnerRadius = 22.6/2 #from my code, from xml file
-    grooveDepth  = 2.0 #from my code, from xml file
-    coneRadius  = R_u
-    coneHeight = H_u
-    boreRadius = r_c
-    boreDepth = h_c
-
     hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/"
                  
-    #Open base MC file
-
+    #____Open base MC file - for single file MC___
     # # have to open the input file with h5py (g4 doesn't write pandas-ready hdf5)
-    # #g4sfile = h5py.File(hdf5_path+'detector_'+MC_file_id+'.hdf5', 'r')
-    # g4sfile = h5py.File(MC_raw, 'r')
-    # g4sntuple = g4sfile['default_ntuples']['g4sntuple']
-    # g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
-
-    # # # build a pandas DataFrame from the hdf5 datasets we will use
-    # g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),lsuffix = '_caller', rsuffix = '_other')
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['Edep']['pages']), columns=['Edep']),lsuffix = '_caller', rsuffix = '_other')
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['volID']['pages']),columns=['volID']), lsuffix = '_caller', rsuffix = '_other')
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['iRep']['pages']),columns=['iRep']), lsuffix = '_caller', rsuffix = '_other')
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
-    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
+    g4sfile = h5py.File(MC_raw, 'r')
+    print(g4sfile.keys())
+    g4sntuple = g4sfile['default_ntuples']['g4sntuple']
+    g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
+    # # build a pandas DataFrame from the hdf5 datasets we will use
+    g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),lsuffix = '_caller', rsuffix = '_other')
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['Edep']['pages']), columns=['Edep']),lsuffix = '_caller', rsuffix = '_other')
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['volID']['pages']),columns=['volID']), lsuffix = '_caller', rsuffix = '_other')
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['iRep']['pages']),columns=['iRep']), lsuffix = '_caller', rsuffix = '_other')
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
+    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
     
+
+    #____Open base MC file - for combined MC files____ from using ../simulations/combine_simulations.py
     #if already combined MC pandas df, skip above, and open with pandas directly
-    g4sdf = pd.read_hdf(MC_raw, key="procdf")
+    #g4sdf = pd.read_hdf(MC_raw, key="procdf")
 
     # apply E cut / detID cut and sum Edeps for each event using loc, groupby, and sum
     # write directly into output dataframe
     detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)]
+    print(detector_hits)
     keys = detector_hits.keys()
     no_events =  len(detector_hits) #73565535 rows x 8 columns, len = 73565535, size = 73565535x8
      
-    #apply FCCD (DLT) cut ]
+    #apply FCCD (DLT) cut
     detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
     print("detector_hits_FCCD")
     print(detector_hits_FCCD)
@@ -142,9 +122,9 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
     #added this - needs checking
     radius = R_b
     height = H
-    grooveOuterRadius = 31.0/2 #from my code, from xml file
-    grooveInnerRadius = 22.6/2 #from my code, from xml file
-    grooveDepth  = 2.0 #from my code, from xml file
+    grooveOuterRadius = 31.0/2 #from my code, from xml file i02160a - not used
+    grooveInnerRadius = 22.6/2 #from my code, from xml file i02160a - not used
+    grooveDepth  = 2.0 #from my code, from xml file i02160a - not used
     coneRadius  = R_u
     coneHeight = H_u
     boreRadius = r_c
