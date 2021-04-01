@@ -108,14 +108,14 @@ def main():
     plt.legend(loc="upper right", fontsize=8)
     
     if cuts == False:
-        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD_OBa133.png")
+        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD_OBa133.png")
     else:
-        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"_FCCD_OBa133_cuts.png")
+        plt.savefig("detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD_OBa133_cuts.png")
 
     plt.show()
 
     #Save interpolated fccd for data to a json file
-    FCCD_data_dict = {"FCCD": FCCD,"FCCD_err": FCCD}
+    FCCD_data_dict = {"FCCD": FCCD_data,"FCCD_err": FCCD_data_err}
     if cuts == False:
         with open("detectors/"+detector+"/"+MC_file_id+"_FCCD_data.json", "w") as outfile: 
             json.dump(FCCD_data_dict, outfile)

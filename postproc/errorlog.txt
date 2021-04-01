@@ -31,3 +31,327 @@ Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 118, in FCCD_cut
+    R_u = R_b - H_u*math.tan(taper_outer_angle_in_deg*np.pi/180) #radius of top crystal
+NameError: name 'taper_outer_angle_in_deg' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 297, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 134, in FCCD_cut
+    [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
+NameError: name 'grooveOuterRadius' is not defined
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:159: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 300, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 173, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:159: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 300, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 173, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:159: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 300, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 173, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:159: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 300, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 173, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:159: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 300, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 173, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:160: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 301, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 174, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:160: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 301, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 174, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:160: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 301, in <module>
+    if __name__=="__main__":
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 174, in FCCD_cut
+    
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:161: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 302, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 175, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:161: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 302, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 175, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:161: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 302, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 175, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:161: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 302, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 175, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:161: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 302, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 175, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment
+/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py:161: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  detector_hits['r'] = r
+Traceback (most recent call last):
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 302, in <module>
+    main()
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 75, in main
+    detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
+  File "/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/analysis_DL_top_fast.py", line 175, in FCCD_cut
+    CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
+UnboundLocalError: local variable 'fBore' referenced before assignment

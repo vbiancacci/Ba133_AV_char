@@ -1,1 +1,0 @@
-qsub -e /lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/errorlog.txt -o /lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/outputlog.txt -N abi_analysis_DL_top /lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/Launch_analysis_DL_top.sh 

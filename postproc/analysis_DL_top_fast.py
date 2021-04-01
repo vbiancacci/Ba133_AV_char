@@ -21,21 +21,17 @@ def main():
     print("")
 
     if(len(sys.argv) != 7):
-        #print('Example usage: python analysis_DL_top.py lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5 detectors/I02160A/constants_I02160A.json g 0.74 0.5')
-        #print('Example usage: python analysis_DL_top.py /lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry detectors/I02160A/constants_I02160A.json g 0.74 0.5')
-        print('Example usage: python analysis_DL_top.py /lfs/l1/legend/detector_char/enr/hades/simulations/legend-g4simple-simulation/IC-legend/IC160A/Ba133/uncollimated/top/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-00.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-singlefile detectors/I02160A/constants_I02160A.json g 0.74 0.5')
+        print('Example usage: python analysis_DL_top.py /lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry.hdf5 IC160A-BA133-uncollimated-top-run0003-81z-newgeometry detectors/I02160A/I02160A.json g 0.74 0.5')
         sys.exit()
 
     print("start...")
 
     MC_raw = sys.argv[1]    #inputfile - e.g. "/lfs/l1/legend/users/aalexander/hdf5_output/detector_IC160A_ba_top_81mmNEW8_01.hdf5"
     MC_file_id = sys.argv[2] #file id for saving output - e.g. IC160A-BA133-uncollimated-top-run0003-81z-newgeometry
-    conf_path = sys.argv[3]     #detector geometry - e.g. detectors/I02160A/constants_I02160A.json
+    conf_path = sys.argv[3]     #detector geometry - e.g. detectors/I02160A/V02160A.json OR detectors/I02160A/constants_I02160A.json
     smear=str(sys.argv[4])      #energy smearing (g/n) smear(g/g+l/n->gaussian/gaussian+lowenergy/none) - e.g. g
     fFCCD=float(sys.argv[5])    #FCCD thickness - e.g. 0.74
     fDLTp=float(sys.argv[6])    #DL fraction % - e.g. 0.5
-
-    #MC_file_id = "IC160A_ba_top_81mmNEW8_01" #need to automate this part
 
     print("MC base file ID: ", MC_file_id)
     print("geometry conf_path: ", conf_path)
@@ -43,44 +39,45 @@ def main():
     print("FCCD: ", fFCCD)
     print("DLF: ", fDLTp)
     
-    fDLT=fFCCD*fDLTp #dl thickness?
+    fDLT=fFCCD*fDLTp #dl thickness (mm)
 
-    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/"
+    hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/" #general path to save large hdf5 files
                  
     #____Open base MC file - for single file MC___
     # # have to open the input file with h5py (g4 doesn't write pandas-ready hdf5)
-    g4sfile = h5py.File(MC_raw, 'r')
-    print(g4sfile.keys())
-    g4sntuple = g4sfile['default_ntuples']['g4sntuple']
-    g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
-    # # build a pandas DataFrame from the hdf5 datasets we will use
-    g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['Edep']['pages']), columns=['Edep']),lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['volID']['pages']),columns=['volID']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['iRep']['pages']),columns=['iRep']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
-    g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sfile = h5py.File(MC_raw, 'r')
+    # print(g4sfile.keys())
+    # g4sntuple = g4sfile['default_ntuples']['g4sntuple']
+    # g4sdf = pd.DataFrame(np.array(g4sntuple), columns=['event'])
+    # # # build a pandas DataFrame from the hdf5 datasets we will use
+    # g4sdf = pd.DataFrame(np.array(g4sntuple['event']['pages']), columns=['event'])
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['step']['pages']), columns=['step']),lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['Edep']['pages']), columns=['Edep']),lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['volID']['pages']),columns=['volID']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['iRep']['pages']),columns=['iRep']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
+    # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
     
 
     #____Open base MC file - for combined MC files____ from using ../simulations/combine_simulations.py
     #if already combined MC pandas df, skip above, and open with pandas directly
-    #g4sdf = pd.read_hdf(MC_raw, key="procdf")
+    g4sdf = pd.read_hdf(MC_raw, key="procdf")
 
     # apply E cut / detID cut and sum Edeps for each event using loc, groupby, and sum
     # write directly into output dataframe
     detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)]
     print(detector_hits)
     keys = detector_hits.keys()
-    no_events =  len(detector_hits) #73565535 rows x 8 columns, len = 73565535, size = 73565535x8
+    no_hits =  len(detector_hits)
      
     #apply FCCD (DLT) cut
     detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
     print("detector_hits_FCCD")
     print(detector_hits_FCCD)
 
-    procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep'], as_index=False)['Edep'].sum())
+    #procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep'], as_index=False)['Edep'].sum())
+    procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep', 'raw_MC_fileno'], as_index=False)['Edep'].sum())
     procdf = procdf.rename(columns={'iRep':'detID', 'Edep':'energy'})
     procdf = procdf[procdf.energy!=0]    
 
@@ -94,7 +91,6 @@ def main():
    
     print(procdf['energy'])
 
-    #procdf.to_hdf(hdf5_path+'processed/valentina_script/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'_fast.hdf5', key='procdf', mode='w')
     procdf.to_hdf(hdf5_path+'raw_MC_combined/processed/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'.hdf5', key='procdf', mode='w')
     
     print("done")
@@ -106,31 +102,38 @@ def main():
 
 def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
     
-    #get geometry constants
+    #get geometry constants- read config geometry for detector
 
-    #read config geometry for detector
     with open(conf_path) as json_file:
-        geometry = json.load(json_file)
-        r_c = geometry['r_c'] #cavity radius
-        R_b = geometry['R_b'] #bottom crystal radius  (79.8/2)
-        R_u = geometry['R_u'] #up crystal radius    (75.5/2 )
-        h_c = geometry['h_c'] #cavity height
-        H = geometry['H'] #crystal height
-        H_u = geometry['H_u'] #up crystal height    (65.4-45.3)
-        offset = geometry['offset'] #position of crystal from Alcap end
+        json_geometry = json.load(json_file)
+        geometry = json_geometry['geometry']
 
-    #added this - needs checking
-    radius = R_b
+        R_b = radius_in_mm = geometry["radius_in_mm"] #crystal main/bottom radius
+        H = height_in_mm = geometry["height_in_mm"] # = cryystal height 
+        well_gap_in_mm = geometry["well"]["gap_in_mm"] #radius cavity
+        r_c = well_radius_in_mm = geometry["well"]["radius_in_mm"] #radius cavity
+        taper_top_outer_angle_in_deg = geometry["taper"]["top"]["outer"]["angle_in_deg"] 
+        H_u = taper_top_outer_height_in_mm = geometry["taper"]["top"]["outer"]["height_in_mm"] #height of top conical part
+        groove_outer_radius_in_mm =  geometry["groove"]["outer_radius_in_mm"]
+
+    R_u = R_b - H_u*math.tan(taper_top_outer_angle_in_deg*np.pi/180) #radius of top crystal
+    h_c = H - well_gap_in_mm #cavity height
+    
+    #these are the parameters required for code
     height = H
-    grooveOuterRadius = 31.0/2 #from my code, from xml file i02160a - not used
-    grooveInnerRadius = 22.6/2 #from my code, from xml file i02160a - not used
-    grooveDepth  = 2.0 #from my code, from xml file i02160a - not used
+    radius = R_b
     coneRadius  = R_u
     coneHeight = H_u
+    print("CONE HEIGHT:")
+    print(coneHeight)
     boreRadius = r_c
     boreDepth = h_c
-    
-    
+    grooveOuterRadius = groove_outer_radius_in_mm
+    print(grooveOuterRadius)
+    #grooveInnerRadius = ?? - not currently used
+
+    offset = 7. # NB: for V07XXXXX detectors the offset is defined in json files, otherwise it is 7mm
+
     #create vectors describing detector edges
     if(coneHeight==0):
         fNplus=np.array([
@@ -138,7 +141,7 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
             [TwoDLine(np.array([radius,height]),np.array([radius,0.]))], #side
             [TwoDLine(np.array([radius,0.]),np.array([boreRadius,0.]))], #top
             ])
-        fNbore=np.array([
+        fBore=np.array([
             [TwoDLine(np.array([boreRadius,0.]),np.array([boreRadius,boreDepth]))], #top bore hole
             [TwoDLine(np.array([boreRadius,boreDepth]),np.array([0.,boreDepth]))], #top bore hole
             ])
@@ -170,13 +173,9 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
     r = detector_hits.r
     z_minusoffset = detector_hits.z - offset
 
-    #CCEs = list(map(GetCCE, [fNplus]*len(r),[fBore]*len(r),r,z_minusoffset, [fFCCD]*len(r), [fDLT]*len(r)))
-    
     CCEs = GetCCEs(fNplus,fBore,r,z_minusoffset,fFCCD,fDLT)
-    #print("CCEs: ", CCEs)
     CCEs = np.array(CCEs)
     Edep_FCCD = CCEs*Edep
-    #print("Edep_FCCD: ", Edep_FCCD)
     detector_hits['Edep'] = Edep_FCCD
     print("detector_hits with Edep FCCD: ", detector_hits)
 
@@ -215,20 +214,10 @@ class TwoDLine():
         p1, p2 = self.p1, self.p2
         p1s, p2s = np.array([self.p1]*no_points), np.array([self.p2]*no_points)
         lengths = np.array([self.length()]*no_points)
-        # print("lengths.shape: ", lengths.shape)
-        # print(lengths)
-        #print("lengths.type: ", lengths.type)
         zeros, ones = np.zeros(no_points), np.ones(no_points)
         dot_products = np.sum((v-p1s)*(p2s-p1s), axis = 1) #= rirj+zizj for each point
-        # print("dot_products.shape: ", dot_products.shape)
-        #print("dot_products.type: ", dot_products.type)
-        # dot_poducts_over_lengths = dot_products/lengths
-        # dot_poducts_over_lengths = np.divide(dot_products,lengths)
         c = (np.maximum(zeros,np.minimum(dot_products/lengths,ones)))
-        # print("c.shape: ", c.shape)
-        # print("c[:,None].shape: ", (c[:,None]).shape)
         projections = p1s + (p2s-p1s)*c[:,None]
-        # print("projections.shape: ", projections.shape)
         return projections
 
     def real_distances(self,v:np.array):
@@ -236,7 +225,6 @@ class TwoDLine():
         #v = array of points
         displacements = self.projections(v)-v
         real_distances = np.linalg.norm(displacements, axis = 1)
-        # print("real_distances.shape: ", real_distances.shape)
         return real_distances
 
 
@@ -245,39 +233,16 @@ def GetMinimumDistances(chain,points:np.array):
     if (len(chain)==0): #what is this condition for?
         return 0
 
-    # print("chain: ", chain)
-    # print("chain[0][0]: ", chain[0][0])
-    # print("len(chain): ", len(chain))
-    # print("len(points)")
-    # print(len(points))
-    
-
-    #distance=chain[0][0].real_distance(point)
-    #distances = ([chain[0][0]]*len(point)).real_distance(point)
-    #distances = [chain[0][0].real_distance(point_i) for point_i in point] #[r for r in relationship_list if r.diff > 1]
-    
     real_distances = chain[0][0].real_distances(points)
     
-    # print("len(real_distances)")
-    # print(len(real_distances))
-    # print("real_distances[0]")
-    # print(real_distances[0])
-
     for entry in chain:
-        # print("entry: ", entry)
-        #distance=min(distance,entry[0].real_distance(point))
-        #distances=[min(distance,entry[0].real_distance(point[index])) for index, distance in enumerate(distances)]
         real_distances = np.minimum(real_distances,entry[0].real_distances(points))
-
-    # print("real_distances[0]")
-    # print(real_distances[0])
 
     return real_distances
  
 
 def GetDistancesToNPlus(fNPlus,r,z):
     points = np.array(list(zip(r, z)))
-    print("points[0]: ", points[0])
     return GetMinimumDistances(fNPlus,points)
 
 def GetDistancesToBore(fBore,r,z):
@@ -318,12 +283,7 @@ def FCCDOuter(x,fDLT,fFCCD):
     return CCEs
 
 def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
-
-    # print("fNplus")
-    # print(fNplus)
-    # print("fBore")
-    # print(fBore)
-
+    print(fBore)
     print("getting distances to Nplus...")
     distancesToNPlus=GetDistancesToNPlus(fNplus,r,z)
     print("getting distances to fBore...")
@@ -333,10 +293,7 @@ def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
     # if (minDist < 0):
     #     return 0
 
-
     CCEs = np.minimum(FCCDBore(distancesToBore,fDLT,fFCCD),FCCDOuter(distancesToNPlus,fDLT,fFCCD))
-   
-    # print("CCEs.shape: ", CCEs.shape)
 
     return CCEs
 

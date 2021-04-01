@@ -54,13 +54,17 @@ def main():
     print("Process each FCCD and DLF...")
 
     #This configuration for getting best fit FCCD
-    FCCD_list = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3.0] #make this an input argument?
-    DLF_list =[1.0] 
+    # FCCD_list = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3.0] #make this an input argument?
+    # DLF_list =[1.0] 
 
     #This configuration for getting best fit TL
-    FCCD_list = [0.71] #=best fit
-    #FCCD_list = [0.67] #=best fit with cuts
+    # FCCD_list = [0.71] #=best fit
+    # #FCCD_list = [0.67] #=best fit with cuts
+    #FCCD_list = [0.73]
+    FCCD_list = [0.69] #=best fit with cuts
     DLF_list = [0.0, 0.25, 0.5, 0.75, 1.0]
+
+
     #comparison graph for different DLFs
     energies_DLF_list = []
     R_DLF_list = []
@@ -77,9 +81,10 @@ def main():
             R_DLF_list.append(R_simdata_356_FCCD)
             #plt.hist(energies_FCCD, bins = bins, weights=(1/R_simdata_356_FCCD)*np.ones_like(energies_FCCD), label ='MC FCCD: ,'+str(FCCD)+' DLF: '+str(DLF)+' (scaled)', histtype = 'step', linewidth = '0.1')
 
+    plt.close("all")
+
 
     #Plot comparison graph for best fit FCCD and varying DLFs
-    plt.close("all")
     print("plotting DLF comparison graph for best fit FCCD")
     fig, ax = plt.subplots()
     bins = np.arange(0, 450, binwidth)
@@ -133,7 +138,7 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
 
     print("356keV:")
     xmin_356, xmax_356 = 352, 359.5 #350 #362
-    if DLF == 1.0 and MC_file_id="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-singlefile_g":
+    if DLF == 1.0 and MC_file_id=="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-singlefile_g":
         xmin_356, xmax_356 = 352, 358 #350 #362
     plt.figure()
     counts, bins, bars = plt.hist(energies, bins = bins, histtype = 'step') #, linewidth = '0.35')
@@ -178,7 +183,7 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
 
 
     #fit other gaussian gamma peaks
-    peak_ranges = [[159.5,161.5],[221.5,225],[274,279],[300,306],[381,386]] #Rough by eye
+    peak_ranges = [[159.5,161.5],[221.5,225],[274,279],[300,306],[381,384.5]] #Rough by eye
     peaks = [161, 223, 276, 303, 383]
     other_peak_counts = []
     other_peak_counts_err = []
@@ -193,12 +198,12 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
             other_peak_counts_err.append(C_err)
             continue
 
-        if peaks[index]==383: #problems converging for this particular histogram
-            C, C_err = float("nan"), float("nan")
-            print("gauss count: ", C, " +/- ", C_err )
-            other_peak_counts.append(C)
-            other_peak_counts_err.append(C_err)
-            continue
+        # if peaks[index]==383: #problems converging for this particular histogram
+        #     C, C_err = float("nan"), float("nan")
+        #     print("gauss count: ", C, " +/- ", C_err )
+        #     other_peak_counts.append(C)
+        #     other_peak_counts_err.append(C_err)
+        #     continue
 
         
         plt.figure()
@@ -352,7 +357,7 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     #calculate DATA/MC for each energy bin and export
     #only do this for best fit FCCD
     #if FCCD == 0.744 or FCCD == 0.698:
-    if FCCD == 0.71 or FCCD == 0.67:    
+    if FCCD == 0.73 or FCCD == 0.69:    
         print("")
         print("calculating data/MC ratios for best fit FCCD")
 
