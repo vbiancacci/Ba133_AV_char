@@ -24,7 +24,7 @@ from pygama.analysis import peak_fitting
 #to do:
 # - decided whether to use trapE.lh5 files or eftp .h5 files, currently using eftp .h5
 # - finalise choice of peak fitting functions
-# - add in director structure for detectors
+# - add in directory structure for detectors
 
 def main():
 
@@ -34,10 +34,10 @@ def main():
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
     print("")
     print("date and time =", dt_string)	
-    print("")
+    print("") 
 
     parser = argparse.ArgumentParser(description='Process calibrated Ba133 data for a particular detector, with cuts or not')
-    parser.add_argument('--detector', action="store_true", default="I02160A")
+    parser.add_argument('--detector', action="store",type=str, default="I02160A")
     parser.add_argument('--cuts', action="store", type=bool, default = False)
     args = parser.parse_args()
     detector, cuts = args.detector, args.cuts
@@ -56,24 +56,27 @@ def main():
     
     if cuts == False:
     
-        df_total_h5= read_all_dsp_h5(t2_folder_h5, cuts)
-        print("df_total_h5: ", df_total_h5)
+        #.h5 files, e_ftp - dont exist for V05266A
+        # df_total_h5= read_all_dsp_h5(t2_folder_h5, cuts)
+        # print("df_total_h5: ", df_total_h5)
+        # e_ftp_data = df_total_h5['e_ftp']
 
+        #.lh5 files, trapE
         df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts)
         print("df_total_lh5: ", df_total_lh5)
-
-        e_ftp_data = df_total_h5['e_ftp']
         trapE_data = df_total_lh5['trapE']
 
     else:
+
+        #.h5 files, e_ftp - dont exist for V05266A
         passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'_ba_top_passed_cuts_data.json','r')) #passed cuts
         df_total_cuts_h5 = read_all_dsp_h5(t2_folder_h5,cuts, passed_cuts = passed_cuts)
         print("df_total_cuts_h5: ", df_total_cuts_h5)
+        e_ftp_data_cuts = df_total_cuts_h5['e_ftp']
 
+        #.lh5 files, trapE
         df_total_cuts_lh5 = read_all_dsp_lh5(t2_folder_lh5, cuts, passed_cuts=passed_cuts)
         print("df_total_cuts_lh5: ", df_total_cuts_lh5)
-
-        e_ftp_data_cuts = df_total_cuts_h5['e_ftp']
         trapE_data_cuts = df_total_cuts_lh5['trapE']
 
 
@@ -101,7 +104,8 @@ def main():
     print("")
     print("Linearly calibrating energy...")
 
-    with open('detectors/'+detector+'/calibration_coef.json') as json_file:
+    #with open('detectors/'+detector+'/calibration_coef.json') as json_file:
+    with open('detectors/'+detector+'/calibration_coef_trapE.json') as json_file:
         calibration_coefs = json.load(json_file)
         m = calibration_coefs['m']
         m_err = calibration_coefs['m_err']
@@ -118,21 +122,22 @@ def main():
 
     binwidth = 0.15 #0.1 #kev
 
+    
     if cuts == False:
-        energy_data = (e_ftp_data-c)/m
+        energy_data = (trapE_data-c)/m #change to e_ftp_data if needed
         print("energy data: ", energy_data)
         #energy_data = energy_data[:,1]
         print("energy data type: ", type(energy_data))
         bins = np.arange(min(energy_data), max(energy_data) + binwidth, binwidth)
         counts_energy_data, bins, bars = plt.hist(energy_data, bins=bins, label = "no cuts")
     else:
-        energy_data_cuts= (e_ftp_data_cuts-c)/m
+        energy_data_cuts= (trapE_data_cuts-c)/m #change to e_ftp_data if needed
         print("energy data cuts: ", energy_data_cuts)
         bins = np.arange(min(energy_data_cuts), max(energy_data_cuts) + binwidth, binwidth)
         counts_energy_data_cuts, bins_cuts, bars_cuts = plt.hist(energy_data_cuts, bins=bins, label = "pile up cuts")
     
 
-    #code for plotting both together
+    #code for plotting both cuts and no cuts together
     # plt.figure()
     # counts_energy_data, bins, bars = plt.hist(energy_data, bins=bins, label = "no cuts")
     # counts_energy_data_cuts, bins_cuts, bars_cuts = plt.hist(energy_data_cuts, bins=bins, label = "pile up cuts")
@@ -155,6 +160,8 @@ def main():
 
     #fit peak with gaussian and unconstrained cdf
     xmin_356, xmax_356 = 352, 360 #360 #kev 
+    if detector == V05266A:
+        xmin_356, xmax_356 = 354, 360 #360 #kev
     if cuts == False:
         plt.figure()
         popt, pcov, xfit = fit_peak_356("Energy (keV)", bins, counts_energy_data, xmin_356, xmax_356)
@@ -278,7 +285,6 @@ def main():
     O_Ba133_av_err = O_Ba133*np.sqrt((C_79_err**2 + C_81_err**2)/(C_79+C_81)**2 + (C_356_average_err/C_356_average)**2)
     print("O_BA133 = " , O_Ba133_av, " +/- ", O_Ba133_av_err)
 
-    #plt.show()
 
     #fit other gaussian gamma peaks
     peak_ranges = [[159,162],[221.5,225],[274,279],[300,306],[381,386]] #Rough by eye
@@ -341,10 +347,10 @@ def main():
     }
 
     if cuts == False:
-        with open("detectors/"+detector+"/dlt_observables.json", "w") as outfile: 
+        with open("detectors/"+detector+"/dlt_observables.json", "w+") as outfile: 
             json.dump(dlt_observables, outfile)
     else:
-        with open("detectors/"+detector+"/dlt_observables_cuts.json", "w") as outfile: 
+        with open("detectors/"+detector+"/dlt_observables_cuts.json", "w+") as outfile: 
             json.dump(dlt_observables, outfile)
 
 def read_all_dsp_h5(t2_folder, cuts, passed_cuts = None):

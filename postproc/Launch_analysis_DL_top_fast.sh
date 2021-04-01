@@ -15,13 +15,13 @@ MC_file_id=sim-V05266A-ba_HS4-top-0r-81z
 CONF_PATH=${DIRECTORY}detectors/V05266A/V05266A.json
 
 SMEAR=g
-#fFCCD=0.71 0.73 0.69 (0 0.25 0.5 0.75 1 1.25 1.5 3)
+#fFCCD=0.71 0.73 0.69 1.06 (0 0.25 0.5 0.75 1 1.25 1.5 3)
 #fDLTp_list=(0 0.25 0.5 0.75 1)
 
 
-for fFCCD in 0 0.25 0.5 0.75 1 1.25 1.5 3
+for fFCCD in 1.06
     do
-        for fDLTp in 1
+        for fDLTp in 0 0.25 0.5 0.75 1
             do
                 echo "fFCCD is $fFCCD"
                 echo "fDLTp is $fDLTp"

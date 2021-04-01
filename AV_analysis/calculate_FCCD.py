@@ -2,7 +2,6 @@ import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-#plt.style.use("mplstyle.txt")
 from datetime import datetime
 import json
 import argparse
@@ -25,8 +24,8 @@ def main():
 
     parser = argparse.ArgumentParser(description='Infer FCCD for a particular detector, with cuts or not')
     #parser.add_argument('--simID', action="store_true", default="IC160A_ba_top_81mmNEW8_01_newresolution")
-    parser.add_argument('--simID', action="store_true", default="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry_g")
-    parser.add_argument('--detector', action="store_true", default="I02160A")
+    parser.add_argument('--simID', action="store", type=str, default="IC160A-BA133-uncollimated-top-run0003-81z-newgeometry_g")
+    parser.add_argument('--detector', action="store", type = str, default="I02160A")
     parser.add_argument('--cuts', action="store", type=bool, default = False)
     args = parser.parse_args()
     MC_file_id, detector, cuts = args.simID, args.detector, args.cuts

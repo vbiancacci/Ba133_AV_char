@@ -7,11 +7,19 @@ import argparse
 from scipy import optimize
 from scipy import stats
 import glob
+import json
+from datetime import datetime
+import sys
+import fnmatch
+
+import pygama.io.lh5 as lh5
 import pygama
 from pygama.analysis import histograms
 from pygama.analysis import peak_fitting
-import json
-from datetime import datetime
+
+# import sys
+# sys.path.append('/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/')
+# from Ba133_data_AV_analysis import * 
 
 "Script to calibrate Ba spectrum from known peaks and output coefficients into json file -- needs to be replaced by clints pygama energy_cal.py"
 
@@ -24,43 +32,64 @@ def main():
     print("date and time =", dt_string)	
     print("")
 
+    if(len(sys.argv) != 2):
+        print('Example usage: python Ba133_Calibration.py V05266A')
+        sys.exit()
+
+    print("start...")
+
+    detector = sys.argv[1]
+    print("detector: ", detector)
+
+    #initialise directories for detectors to save
+    if not os.path.exists("detectors/"+detector+"/plots"):
+        os.makedirs("detectors/"+detector+"/plots")
+
     #read tier 2 runs for Ba data
-    detector = "I02160A"
-    t2_folder = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/"
-    keys, data = read_all_t2(t2_folder)
 
-    data_size = data.size #all events 
-    print("data_size: ", data_size)
+    #.h5 files - do not exist for V05266A
+    #t2_folder_h5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v00.00/"
+    # df_total_h5= read_all_dsp_h5(t2_folder_h5, cuts=False) 
+    # print("df_total_h5: ", df_total_h5)
+    #e_ftp_data = df_total_h5['e_ftp']
 
-    key = "e_ftp"
-    key_data = obtain_key_data(data, keys, key, data_size)
+    #.lh5 files
+    t2_folder_lh5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v01.00/"
+    df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts=False)
+    print("df_total_lh5: ", df_total_lh5)
+    trapE_data = df_total_lh5['trapE']
+
+    key = "trapE" #change this if you want e_ftp instead
+    key_data = trapE_data
     no_events = key_data.size #all events = the same as sum(counts)
     print("No. events [key_data.size]: ", no_events)
+
     no_bins = 25000 #10000 #7722
 
+    #Plot full uncalibrated energy spectrum - e_ftp
     fig, ax = plt.subplots()
     counts, bins, bars = plt.hist(key_data, bins=no_bins)
     binwidth = bins[1] - bins[0]
     print("bin width uncal: ", binwidth, " uncal unit")
     plt.yscale("log")
-    plt.xlabel("e_ftp")
+    plt.xlabel(key)
     plt.ylabel("Counts")
     plt.xlim(0, 40000)
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     info_str = '\n'.join((r'# events = $%.0f$' % (no_events), r'binwidth = $%.2f$' % (binwidth)))
     ax.text(0.67, 0.97, info_str, transform=ax.transAxes, fontsize=10,verticalalignment='top', bbox=props)
-    plt.savefig("plots/e_ftp.png")
+    plt.savefig("detectors/"+detector+"/plots/"+key+".png")
 
     fig, ax = plt.subplots()
     counts, bins, bars = plt.hist(key_data, bins=no_bins)
     plt.yscale("log")
-    plt.xlabel("e_ftp")
+    plt.xlabel(key)
     plt.ylabel("Counts")
     plt.xlim(0, 7000) 
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     info_str = '\n'.join((r'# events = $%.0f$' % (no_events), r'binwidth = $%.2f$' % (binwidth)))
     ax.text(0.67, 0.97, info_str, transform=ax.transAxes, fontsize=10,verticalalignment='top', bbox=props)
-    plt.savefig("plots/e_ftp_zoom.png")
+    plt.savefig("detectors/"+detector+"/plots/"+key+"_zoom.png")
 
     #___________Calibration__________
     print("Calibrating...")
@@ -71,7 +100,9 @@ def main():
     #https://www.ezag.com/fileadmin/ezag/user-uploads/isotopes/isotopes/Isotrak/isotrak-pdf/Decay_Schema_Data/Ba-133.pdf
 
     truth_energies = np.array([81.0, 276.40,302.85,356.02,383.85]) #keV
-    peak_lims_guess = [[1277, 1315], [4380, 4450], [4805,4870], [5645,5725], [6090,6170]] #rough guess on peak window
+    #rough guess on peak window:
+    #peak_lims_guess = [[1277, 1315], [4380, 4450], [4805,4870], [5645,5725], [6090,6170]] #-i02160a, e_ftp
+    peak_lims_guess = [[1270, 1315], [4340, 4430], [4760,4840], [5600,5700], [6020,6170]] #V05266A, trapE
 
     mu_peaks = []
     sigma_peaks = []
@@ -94,7 +125,7 @@ def main():
         plt.ylim(10, 0.5*10**6)
         plt.title(truth_str+" keV peak [Uncalibrated]")
         plt.yscale("log")
-        plt.savefig("plots/"+truth_str+"keV_peak_uncal.png")
+        plt.savefig("detectors/"+detector+"/plots/"+truth_str+"keV_peak_uncal.png")
 
     #Plot calibration curves:
     print("")
@@ -105,7 +136,7 @@ def main():
     for x, y in zip(truth_energies, calibration_data):
         truth_str = str(int(x))
         plt.annotate(truth_str, (x,y), textcoords="offset points", xytext=(-5,5), ha='center') # horizontal alignment can be left, right or center
-    plt.savefig("plots/calibration_curve_linear.png")
+    plt.savefig("detectors/"+detector+"/plots/calibration_curve_linear.png")
 
     #plot linear residuals
     plt.figure()
@@ -118,7 +149,7 @@ def main():
         truth_str = str(int(x))
         plt.annotate(truth_str, (x,y), textcoords="offset points", xytext=(0,5), ha='center') # horizontal alignment can be left, right or center 
     plt.axhline(linewidth=2, color='black', dashes = (5,2,1,2))
-    plt.savefig("plots/calibration_residuals.png")
+    plt.savefig("detectors/"+detector+"/plots/calibration_residuals.png")
 
     #plot quadratic calibration
     plt.figure()
@@ -126,7 +157,7 @@ def main():
     for x, y in zip(truth_energies, calibration_data):
         truth_str = str(int(x))
         plt.annotate(truth_str, (x,y), textcoords="offset points", xytext=(-5,5), ha='center') 
-    plt.savefig("plots/calibration_curve_quadratic.png")
+    plt.savefig("detectors/"+detector+"/plots/calibration_curve_quadratic.png")
 
     #plot quadratic residuals
     plt.figure()
@@ -139,7 +170,7 @@ def main():
         truth_str = str(int(x))
         plt.annotate(truth_str, (x,y), textcoords="offset points", xytext=(0,5), ha='center') # horizontal alignment can be left, right or center 
     plt.axhline(linewidth=2, color='black', dashes = (5,2,1,2))
-    plt.savefig("plots/calibration_residuals_quadratic.png")
+    plt.savefig("detectors/"+detector+"/plots/calibration_residuals_quadratic.png")
 
 
     #Save calibration coefficients to json file
@@ -155,7 +186,7 @@ def main():
         "c_quad" : c_quad,
         "c_quad_err" : c_quad_err
     }
-    with open("calibration_coef.json", "w") as outfile: 
+    with open("detectors/"+detector+"/calibration_coef_"+key+".json", "w") as outfile: 
         json.dump(calibration_coef_dict, outfile)
 
 
@@ -176,7 +207,6 @@ def main():
     #print("ideal no bins: ", no_bins_ideal) #=7722
 
     fig, ax = plt.subplots()
-    #counts, bins_cal, bars = plt.hist(calibrated_energy, bins=no_bins)
     counts, bins_cal, bars = plt.hist(calibrated_energy, bins=bins)
     no_events = calibrated_energy.size
     print("No. events [cal_energy.size]: ", no_events)
@@ -187,11 +217,10 @@ def main():
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     info_str = '\n'.join((r'# events = $%.0f$' % (no_events), r'binwidth = $%.2f$ keV' % (binwidth)))
     ax.text(0.67, 0.97, info_str, transform=ax.transAxes, fontsize=10,verticalalignment='top', bbox=props)
-    plt.savefig("plots/calibrated_energy.png") 
+    plt.savefig("detectors/"+detector+"/plots/calibrated_energy.png") 
 
     #plot zoomed in
     fig, ax = plt.subplots()
-    #counts, bins_cal, bars = plt.hist(calibrated_energy, bins=no_bins)
     counts, bins_cal, bars = plt.hist(calibrated_energy, bins=bins)
     plt.xlabel("Energy (KeV)")
     plt.ylabel("Counts")
@@ -200,7 +229,7 @@ def main():
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     info_str = '\n'.join((r'# events = $%.0f$' % (no_events), r'binwidth = $%.2f$ keV' % (binwidth)))
     ax.text(0.67, 0.97, info_str, transform=ax.transAxes, fontsize=10,verticalalignment='top', bbox=props)
-    plt.savefig("plots/calibrated_energy_zoom.png") 
+    plt.savefig("detectors/"+detector+"/plots/calibrated_energy_zoom.png") 
 
     print("")
     print("Replotting calibrated spectra and peaks...")
@@ -221,13 +250,12 @@ def main():
         sigma_cal_peaks.append(sigma)
         mu_err_cal_peaks.append(mu_err)
         sigma_err_cal_peaks.append(sigma_err)
-        #counts, bins, bars = plt.hist(calibrated_energy, bins=no_bins, histtype='step', color='grey')
         counts, bins, bars = plt.hist(calibrated_energy, bins=bins, histtype='step', color='grey')
         plt.xlim(xmin, xmax)
         plt.ylim(10, 0.5*10**6)
         plt.title(truth_str+" keV peak [Calibrated]")
         plt.yscale("log")
-        plt.savefig("plots/"+truth_str+"keV_peak.png")
+        plt.savefig("detectors/"+detector+"/plots/"+truth_str+"keV_peak.png")
 
 
     #______Correct resolution plot_______
@@ -242,36 +270,74 @@ def main():
         index = np.where(energies == x)[0][0]
         truth_str = str(int(truth_energies[index]))
         plt.annotate(truth_str, (x,y), textcoords="offset points", xytext=(-10,5), ha='center') # horizontal alignment can be left, right or center
-    plt.savefig("plots/resolution_plot.png")
+    plt.savefig("detectors/"+detector+"/plots/resolution_plot.png")
 
     #calculate estimated resolution at qbb=2039keV
     resolution_qbb_est = A*np.sqrt(2039 + offset)
     print("Estimated resolution at qbb=2039 keV: ", resolution_qbb_est, " keV") #=1.87 keV, legend target = 2-3kev
 
-def read_all_t2(t2_folder):
-    "get data from all tier2 files from same run within a directory"
+def read_all_dsp_h5(t2_folder, cuts, passed_cuts = None):
+    "get data from all tier2/dsp files from same run within a directory. Apply cuts"
 
-    run1_files = glob.glob(t2_folder + "/*run0001*.h5")
+    files = os.listdir(t2_folder)
+    files = fnmatch.filter(files, "*.h5")
 
-    file_list = []
-    for filename in run1_files:
-        df = pd.read_hdf(filename, "data")
-        file_list.append(df)
+    df_list = []
+    df_cuts_list = []
+    for file in files:
+
+        #get data, no cuts
+        df = pd.read_hdf(t2_folder+file, "data")
+        df_list.append(df)
+
+        #apply cuts
+        if cuts == True:
+            file_mod = file.replace(".h5", "_tier1.lh5")
+            file_mod = file_mod.replace("t2_char_data-I02160A","char_data-I02160A")
+            idx = passed_cuts[file_mod]
+            df_cuts = df.iloc[idx, :]
+            #df_cuts = df[df['ievt'].isin(idx)]
+            df_cuts_list.append(df_cuts)
+
+    if cuts == False:
+        df_total = pd.concat(df_list, axis=0, ignore_index=True)
+        return df_total
+    else:
+        df_total_cuts = pd.concat(df_cuts_list, axis=0, ignore_index=True)
+        return df_total_cuts
+
+def read_all_dsp_lh5(t2_folder, cuts, passed_cuts = None):
+
+    sto = lh5.Store()
+    files = os.listdir(t2_folder)
+    files = fnmatch.filter(files, "*lh5")
+
+    df_list = []
+    df_cuts_list = []
+
+    for file in files:
     
-    df_total = pd.concat(file_list, axis=0, ignore_index=True)
-    keys = df_total.keys()
-    data = df_total.to_numpy()
+        #get data, no cuts
+        tb = sto.read_object("raw",t2_folder+file)[0]
+        df = lh5.Table.get_dataframe(tb)
+        df_list.append(df)
 
-    return keys, data
+        #apply cuts
+        if cuts == True:
+            file_mod = file.replace("tier2", "tier1")
+            idx = passed_cuts[file_mod]
+            # tb_cuts = sto.read_object("raw",t2_folder+file, idx=idx)[0] #needs new version of pygama
+            # df_cuts = lh5.Table.get_dataframe(tb_cuts)
+            df_cuts = df.iloc[idx, :]
+            df_cuts_list.append(df_cuts)
 
+    if cuts == False:
+        df_total = pd.concat(df_list, axis=0, ignore_index=True)
+        return df_total
+    else:
+        df_total_cuts = pd.concat(df_cuts_list, axis=0, ignore_index=True)
+        return df_total_cuts
 
-def obtain_key_data(data, keys, key, data_size):
-    "obtain data values for a particular key, e.g. energy"
-
-    key_index = (np.where(keys == key))[0][0]
-    key_data = data[:data_size, key_index]
-
-    return key_data
 
 def gaussian(x,a,b,c,d):
     "gaussian function with offset d"

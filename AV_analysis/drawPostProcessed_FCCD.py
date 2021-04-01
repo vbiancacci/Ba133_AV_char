@@ -54,15 +54,15 @@ def main():
     print("Process each FCCD and DLF...")
 
     #This configuration for getting best fit FCCD
-    # FCCD_list = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3.0] #make this an input argument?
-    # DLF_list =[1.0] 
+    FCCD_list = [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 3.0] #make this an input argument?
+    DLF_list =[1.0] 
 
     #This configuration for getting best fit TL
     # FCCD_list = [0.71] #=best fit
     # #FCCD_list = [0.67] #=best fit with cuts
     #FCCD_list = [0.73]
-    FCCD_list = [0.69] #=best fit with cuts
-    DLF_list = [0.0, 0.25, 0.5, 0.75, 1.0]
+    # FCCD_list = [0.69] #=best fit with cuts
+    # DLF_list = [0.0, 0.25, 0.5, 0.75, 1.0]
 
 
     #comparison graph for different DLFs
@@ -85,26 +85,26 @@ def main():
 
 
     #Plot comparison graph for best fit FCCD and varying DLFs
-    print("plotting DLF comparison graph for best fit FCCD")
-    fig, ax = plt.subplots()
-    bins = np.arange(0, 450, binwidth)
-    for index, energies_DLF in enumerate(energies_DLF_list):
-        DLF, FCCD = DLF_list[index], FCCD_list[0]
-        print("DLF: ", DLF)
-        print("FCCD: ", FCCD)
-        print("R for DLF i: ", R_DLF_list[index])
-        plt.hist(energies_DLF, bins = bins, weights=(1/R_DLF_list[index])*np.ones_like(energies_DLF), label ='MC FCCD: '+str(FCCD)+' DLF: '+str(DLF)+' (scaled)', histtype = 'step', linewidth = '0.25')
-    plt.hist(energy_data, bins=bins,  label = "Data", histtype = 'step', linewidth = '0.25')
-    plt.xlabel("Energy [keV]")
-    plt.ylabel("Counts")
-    plt.xlim(0, 450)
-    plt.yscale("log")
-    plt.legend(loc="lower left")
-    if cuts == False:
-        plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison.png")
-    else:
-        plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison_cuts.png")
-    plt.show()
+    # print("plotting DLF comparison graph for best fit FCCD")
+    # fig, ax = plt.subplots()
+    # bins = np.arange(0, 450, binwidth)
+    # for index, energies_DLF in enumerate(energies_DLF_list):
+    #     DLF, FCCD = DLF_list[index], FCCD_list[0]
+    #     print("DLF: ", DLF)
+    #     print("FCCD: ", FCCD)
+    #     print("R for DLF i: ", R_DLF_list[index])
+    #     plt.hist(energies_DLF, bins = bins, weights=(1/R_DLF_list[index])*np.ones_like(energies_DLF), label ='MC FCCD: '+str(FCCD)+' DLF: '+str(DLF)+' (scaled)', histtype = 'step', linewidth = '0.25')
+    # plt.hist(energy_data, bins=bins,  label = "Data", histtype = 'step', linewidth = '0.25')
+    # plt.xlabel("Energy [keV]")
+    # plt.ylabel("Counts")
+    # plt.xlim(0, 450)
+    # plt.yscale("log")
+    # plt.legend(loc="lower left")
+    # if cuts == False:
+    #     plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison.png")
+    # else:
+    #     plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison_cuts.png")
+    # plt.show()
 
     print("done")
     print("time elapsed: ")
@@ -117,11 +117,6 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     #_______plot full spectrum___________
     print("plotting whole simulated spectrum...")
 
-    # if FCCD == 0:
-    #     MC_file = hdf5_path+"processed_detector_"+MC_file_id+'.hdf5'
-    # else:
-    #     MC_file = hdf5_path+"processed_detector_"+MC_file_id+'_FCCD'+str(FCCD)+'mm.hdf5'
-    
     MC_file = hdf5_path+"processed_detector_"+MC_file_id+'_FCCD'+str(FCCD)+'mm_DLF'+str(DLF)+'.hdf5'    
 
     df =  pd.read_hdf(MC_file, key="procdf")
@@ -129,7 +124,6 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     #energies = energies*1000 - not needed anymore
     no_events = energies.size #=sum(counts)
     print("No. events: ", no_events) 
-    #bins = np.arange(min(energies), max(energies) + binwidth, binwidth)
     bins = np.arange(0,450,binwidth)
 
     #________Fit peaks of interest_______
@@ -229,27 +223,30 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     print("")
     print("plotting simulation against actual data...")
 
-    t2_folder_h5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v00.00/"
-    #t2_folder_lh5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v01.00/"
-
-    with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef.json") as json_file:
+    #get calibration coefs
+    #with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef.json") as json_file:
+    with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef_trapE.json") as json_file:  
         calibration_coefs = json.load(json_file)
         m = calibration_coefs['m']
         m_err = calibration_coefs['m_err']
         c = calibration_coefs['c']
         c_err = calibration_coefs['c_err']
 
+    
+    t2_folder_h5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v00.00/"
+    t2_folder_lh5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v01.00/"
 
     if cuts == False:
     
-        df_total_h5 = read_all_dsp_h5(t2_folder_h5, cuts)
-        e_ftp_data = df_total_h5['e_ftp']
-        # df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts)
-        # trapE_data = df_total_lh5['trapE']
+        # e_ftp, .h5 files - dont exist for V05266A
+        # df_total_h5 = read_all_dsp_h5(t2_folder_h5, cuts)
+        # e_ftp_data = df_total_h5['e_ftp']
+        # energy_data = (e_ftp_data-c)/m
 
-        energy_data = (e_ftp_data-c)/m
-        #bins = np.arange(min(energy_data), max(energy_data) + binwidth, binwidth)
-        #counts_energy_data, bins, bars = plt.hist(energy_data, bins=bins, label = "no cuts")
+        #trapE, .lh5 files
+        df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts)
+        trapE_data = df_total_lh5['trapE']
+        energy_data = (trapE_data-c)/m
 
         #plot absolutes
         # bins_data = bins = np.arange(0, 450, binwidth)
@@ -277,7 +274,6 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
         print(R_simdata_356_counts)
 
         fig, ax = plt.subplots()
-        #bins_data = bins = np.arange(0, 450, binwidth)
         counts_data, bins, bars_data = plt.hist(energy_data, bins=bins,  label = "Data", histtype = 'step', linewidth = '0.35')
         counts, bins, bars = plt.hist(energies, bins = bins, weights=(1/R_simdata_356_counts)*np.ones_like(energies), label = "MC: FCCD "+str(FCCD)+"mm, DLF: "+str(DLF)+" (scaled)", histtype = 'step', linewidth = '0.35')
         print("counts scaled")
@@ -291,14 +287,16 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
 
     else:
         passed_cuts = json.load(open('/lfs/l1/legend/users/aalexander/large_files/cuts/'+detector+'_ba_top_passed_cuts_data.json','r')) #passed cuts
+        
+        #e_ftp, .h5 files - dont exist for V05266A
         df_total_cuts_h5 = read_all_dsp_h5(t2_folder_h5,cuts, passed_cuts = passed_cuts)
         e_ftp_data_cuts = df_total_cuts_h5['e_ftp']
+        energy_data_cuts= (e_ftp_data_cuts-c)/m
+        
+        #trapE, .lh5 files
         # df_total_cuts_lh5 = read_all_dsp_lh5(t2_folder_lh5, cuts, passed_cuts=passed_cuts)
         # trapE_data_cuts = df_total_cuts_lh5['trapE']
-    
-        energy_data_cuts= (e_ftp_data_cuts-c)/m
-        #bins = np.arange(min(energy_data_cuts), max(energy_data_cuts) + binwidth, binwidth)
-        #counts_energy_data_cuts, bins_cuts, bars_cuts = plt.hist(energy_data_cuts, bins=bins, label = "pile up cuts")
+        #energy_data_cuts= (trapE_data_cuts-c)/m
 
         #scale up data to same amplitude 356 peak as simulation
         with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/dlt_observables_cuts.json") as json_file:
@@ -312,7 +310,6 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
         print(R_simdata_356_counts)
 
         fig, ax = plt.subplots()
-        #bins_data = bins = np.arange(0, 450, binwidth)
         counts_data_cuts, bins, bars_data = plt.hist(energy_data_cuts, bins=bins,  label = "Data (cuts)", histtype = 'step', linewidth = '0.35')
         counts, bins, bars = plt.hist(energies, bins = bins, weights=(1/R_simdata_356_counts)*np.ones_like(energies), label = "MC: FCCD "+str(FCCD)+"mm, DLF: "+str(DLF)+" (scaled)", histtype = 'step', linewidth = '0.35')
         plt.xlabel("Energy [keV]")

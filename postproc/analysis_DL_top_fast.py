@@ -124,8 +124,6 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
     radius = R_b
     coneRadius  = R_u
     coneHeight = H_u
-    print("CONE HEIGHT:")
-    print(coneHeight)
     boreRadius = r_c
     boreDepth = h_c
     grooveOuterRadius = groove_outer_radius_in_mm
@@ -210,7 +208,6 @@ class TwoDLine():
         #= projection, returns coordinates of projected point
         #v = array of points
         no_points = max(v.shape)
-        print("no_points: ", no_points)
         p1, p2 = self.p1, self.p2
         p1s, p2s = np.array([self.p1]*no_points), np.array([self.p2]*no_points)
         lengths = np.array([self.length()]*no_points)
@@ -293,6 +290,7 @@ def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
     # if (minDist < 0):
     #     return 0
 
+    print("getting CCEs...")
     CCEs = np.minimum(FCCDBore(distancesToBore,fDLT,fFCCD),FCCDOuter(distancesToNPlus,fDLT,fFCCD))
 
     return CCEs
