@@ -117,55 +117,13 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
         json_geometry = json.load(json_file)
         geometry = json_geometry['geometry']
 
-        R_b = radius_in_mm = geometry["radius_in_mm"] #crystal main/bottom radius
-        H = height_in_mm = geometry["height_in_mm"] # = cryystal height
-        well_gap_in_mm = geometry["well"]["gap_in_mm"] #radius cavity
-        r_c = well_radius_in_mm = geometry["well"]["radius_in_mm"] #radius cavity
-        #taper_top_outer_angle_in_deg = geometry["taper"]["top"]["outer"]["angle_in_deg"]
-        #H_u = taper_top_outer_height_in_mm = geometry["taper"]["top"]["outer"]["height_in_mm"] #height of top conical part
-        groove_outer_radius_in_mm =  geometry["groove"]["outer_radius_in_mm"]
-
-    #R_u = R_b - H_u*math.tan(taper_top_outer_angle_in_deg*np.pi/180) #radius of top crystal
-    #h_c = H - well_gap_in_mm #cavity height
-
-    #these are the parameters required for code
-    height = H
-    radius = R_b
-    #coneRadius  = R_u
-    #coneHeight = H_u
-    boreRadius = r_c
-    boreDepth = h_c
-    grooveOuterRadius = groove_outer_radius_in_mm
-    print(grooveOuterRadius)
     #grooveInnerRadius = ?? - not currently used
 
     offset = 7. # NB: for V07XXXXX detectors the offset is defined in json files, otherwise it is 7mm
 
     #create vectors describing detector edges
     fNplus, fBore =g.geometry()
-    '''
-    if(coneHeight==0):
-        fNplus=np.array([
-            [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
-            [TwoDLine(np.array([radius,height]),np.array([radius,0.]))], #side
-            [TwoDLine(np.array([radius,0.]),np.array([boreRadius,0.]))], #top
-            ])
-        fBore=np.array([
-            [TwoDLine(np.array([boreRadius,0.]),np.array([boreRadius,boreDepth]))], #top bore hole
-            [TwoDLine(np.array([boreRadius,boreDepth]),np.array([0.,boreDepth]))], #top bore hole
-            ])
-    else:
-        fNplus=np.array([
-            [TwoDLine(np.array([grooveOuterRadius,height]),np.array([radius,height]))], #bottom
-            [TwoDLine(np.array([radius,height]),np.array([radius,coneHeight]))], #side
-            [TwoDLine(np.array([radius,coneHeight]),np.array([coneRadius,0.]))], #tapper
-            [TwoDLine(np.array([coneRadius,0.]),np.array([boreRadius,0.]))], #top
-            ])
-        fBore=np.array([
-            [TwoDLine(np.array([boreRadius,0.]),np.array([boreRadius,boreDepth]))], #top bore hole
-            [TwoDLine(np.array([boreRadius,boreDepth]),np.array([0.,boreDepth]))], #top bore hole
-            ])
-    '''
+    
     #add an "r" column to df (r^2=x^2+y^2)
     r = np.sqrt((detector_hits['x'].to_numpy())**2 + (detector_hits['y'].to_numpy())**2)
     detector_hits['r'] = r
