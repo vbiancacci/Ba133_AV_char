@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-export PATH=~/miniconda3/bin:$PATH 
-DIRECTORY=/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/
+#export PATH=~/miniconda3/bin:$PATH 
+source /lfs/l3/gerda/sturm/sw/.install/python3/linux-scientific-7.3-x86_64/7.4/swmodrc.sh
+DIRECTORY=./
+#DIRECTORY=/lfs/l1/legend/users/aalexander/Ba133_AV_char/postproc/
 #MC_RAW=/lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry.hdf5
 #MC_RAW=/lfs/l1/legend/detector_char/enr/hades/simulations/legend-g4simple-simulation/IC-legend/IC160A/Ba133/uncollimated/top/raw-IC160A-BA133-uncollimated-top-run0003-81z-newgeometry-00.hdf5 #single file test
 #MC_RAW=/lfs/l1/legend/users/aalexander/hdf5_output/raw_MC_combined/sim-V05266A-ba_HS4-top-0r-81z.hdf5
