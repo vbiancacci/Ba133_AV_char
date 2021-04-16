@@ -11,7 +11,7 @@ import json
 #####
 #functions from files
 sys.path.insert(1,'./tools')
-import tl-model as tl
+import tlmodels as tl
 #####
 
 
