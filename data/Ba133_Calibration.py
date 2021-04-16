@@ -47,7 +47,7 @@ def main():
 
     #read tier 2 runs for Ba data
 
-    #.h5 files - do not exist for V05266A
+    #.h5 files - do not exist for V05266A or V05268B
     #t2_folder_h5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v00.00/"
     # df_total_h5= read_all_dsp_h5(t2_folder_h5, cuts=False) 
     # print("df_total_h5: ", df_total_h5)
@@ -57,6 +57,7 @@ def main():
     t2_folder_lh5 = "/lfs/l1/legend/detector_char/enr/hades/char_data/"+detector+"/tier2/ba_HS4_top_dlt/pygama/v01.00/"
     df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts=False)
     print("df_total_lh5: ", df_total_lh5)
+    print("df_total_lh5 keys: ", df_total_lh5.keys())
     trapE_data = df_total_lh5['trapE']
 
     key = "trapE" #change this if you want e_ftp instead

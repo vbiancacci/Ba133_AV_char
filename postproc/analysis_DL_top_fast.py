@@ -64,7 +64,7 @@ def main():
     #if already combined MC pandas df, skip above, and open with pandas directly
     g4sdf = pd.read_hdf(MC_raw, key="procdf")
 
-    # apply E cut / detID cut and sum Edeps for each event using loc, groupby, and sum
+    # apply E cut / detID cut
     # write directly into output dataframe
     detector_hits = g4sdf.loc[(g4sdf.Edep>0)&(g4sdf.volID==1)]
     print(detector_hits)
@@ -76,6 +76,7 @@ def main():
     print("detector_hits_FCCD")
     print(detector_hits_FCCD)
 
+    # sum Edeps for each event using loc, groupby, and sum
     #procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep'], as_index=False)['Edep'].sum())
     procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep', 'raw_MC_fileno'], as_index=False)['Edep'].sum())
     procdf = procdf.rename(columns={'iRep':'detID', 'Edep':'energy'})

@@ -1,0 +1,111 @@
+{
+  "det_name": "V05268B",
+  "det_type": "icpc",
+  "production": {
+    "manufacturer": "Mirion",
+    "order": 5.0,
+    "serialno": "P50268B",
+    "crystal": "268",
+    "slice": "B",
+    "enrichment": 0,
+    "reprocessing": "no",
+    "dep_voltage_in_V": 3800.0,
+    "rec_voltage_in_V": 4300.0,
+    "impcc": {
+      "array": {
+        "value_in_1e9e/cm3": [
+          25, 18, 13, 10
+        ],
+        "dist_from_contact_in_mm": [
+          0.0, 9, 29, 66
+        ]
+      },
+      "function_pars": {
+        "z0_in_1e10e/cm3": 0,
+        "gradient_in_1e10e/cm4": 0,
+        "quadratic_in_1e10e/cm5": 0
+      }
+    },
+    "delivered": "10-09-2020"
+  },
+  "geometry": {
+    "mass_in_g": 1791.0,
+    "height_in_mm": 65.2,
+    "radius_in_mm": 40.1,
+    "bottom_cyl": {
+      "radius_in_mm": 0,
+      "height_in_mm": 0,
+      "transition_in_mm": 0
+    },
+    "bulletization": {
+      "top_radius_in_mm": 0,
+      "bottom_radius_in_mm": 0,
+      "well_radius_in_mm": 0,
+      "contact_radius_in_mm": 0
+    },
+    "well": {
+      "gap_in_mm": 16.2,
+      "radius_in_mm": 4
+    },
+    "groove": {
+      "outer_radius_in_mm": 18,
+      "depth_in_mm": 2.0,
+      "width_in_mm": 3.0
+    },
+    "contact": {
+      "radius_in_mm": 15.0,
+      "depth_in_mm": 0.0
+    },
+    "taper": {
+      "top": {
+        "inner": {
+          "angle_in_deg": 5,
+          "height_in_mm": 45
+        },
+        "outer": {
+          "angle_in_deg": 0,
+          "height_in_mm": 0
+        }
+      },
+      "bottom": {
+        "outer": {
+          "angle_in_deg": 0,
+          "height_in_mm": 0
+        }
+      }
+    },
+    "topgroove": {
+      "radius_in_mm": 0,
+      "depth_in_mm": 0
+    },
+    "crack": {
+      "radius_in_mm": 0,
+      "height_in_mm": 0
+    },
+    "dl_thickness_in_mm": 0
+  },
+  "characterization": {
+    "manufacturer": {
+      "dep_voltage_in_V": 4500.0,
+      "op_voltage_in_V": 5000.0,
+      "57co_fep_res_in_keV": 0.875,
+      "60co_fep_res_in_keV": 1.86,
+      "dl_thickness_in_mm": 1.59
+    },
+    "l200_site": {
+      "data": "/lfs/l1/legend/detector_char/enr/hades/char_data/V05268B",
+      "daq": "FlashCam",
+      "elog": "https://elog.legend-exp.org/site/?Det.+ID=V05268B",
+      "res": {
+        "cofep_in_keV": 0,
+        "tlfep_in_keV": 2.51
+      },
+      "sf": {
+        "tldep_in_pc": 90.0,
+        "qbb_in_pc": 41.4,
+        "tlsep_in_pc": 12.8,
+        "tlfep_in_pc": 18.4
+      }
+    }
+  }
+}

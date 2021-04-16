@@ -61,9 +61,10 @@ def main():
     # FCCD_list = [0.71] #=best fit
     # #FCCD_list = [0.67] #=best fit with cuts
     #FCCD_list = [0.73]
-    # FCCD_list = [0.69] #=best fit with cuts
-    # DLF_list = [0.0, 0.25, 0.5, 0.75, 1.0]
-
+    FCCD_list = [0.69] #=best fit I02160A with cuts
+    #FCCD_list = [1.06]
+    #DLF_list = [0.0, 0.25, 0.5, 0.75, 1.0, -0.25, -0.5]
+    DLF_list = [0.0, 0.5, 1.0, -0.25, -0.5, -0.75]
 
     #comparison graph for different DLFs
     energies_DLF_list = []
@@ -85,26 +86,26 @@ def main():
 
 
     #Plot comparison graph for best fit FCCD and varying DLFs
-    # print("plotting DLF comparison graph for best fit FCCD")
-    # fig, ax = plt.subplots()
-    # bins = np.arange(0, 450, binwidth)
-    # for index, energies_DLF in enumerate(energies_DLF_list):
-    #     DLF, FCCD = DLF_list[index], FCCD_list[0]
-    #     print("DLF: ", DLF)
-    #     print("FCCD: ", FCCD)
-    #     print("R for DLF i: ", R_DLF_list[index])
-    #     plt.hist(energies_DLF, bins = bins, weights=(1/R_DLF_list[index])*np.ones_like(energies_DLF), label ='MC FCCD: '+str(FCCD)+' DLF: '+str(DLF)+' (scaled)', histtype = 'step', linewidth = '0.25')
-    # plt.hist(energy_data, bins=bins,  label = "Data", histtype = 'step', linewidth = '0.25')
-    # plt.xlabel("Energy [keV]")
-    # plt.ylabel("Counts")
-    # plt.xlim(0, 450)
-    # plt.yscale("log")
-    # plt.legend(loc="lower left")
-    # if cuts == False:
-    #     plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison.png")
-    # else:
-    #     plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison_cuts.png")
-    # plt.show()
+    print("plotting DLF comparison graph for best fit FCCD")
+    fig, ax = plt.subplots()
+    bins = np.arange(0, 450, binwidth)
+    for index, energies_DLF in enumerate(energies_DLF_list):
+        DLF, FCCD = DLF_list[index], FCCD_list[0]
+        print("DLF: ", DLF)
+        print("FCCD: ", FCCD)
+        print("R for DLF i: ", R_DLF_list[index])
+        plt.hist(energies_DLF, bins = bins, weights=(1/R_DLF_list[index])*np.ones_like(energies_DLF), label ='MC FCCD: '+str(FCCD)+' DLF: '+str(DLF)+' (scaled)', histtype = 'step', linewidth = '0.35')
+    plt.hist(energy_data, bins=bins,  label = "Data", histtype = 'step', linewidth = '0.25')
+    plt.xlabel("Energy [keV]")
+    plt.ylabel("Counts")
+    plt.xlim(0, 450)
+    plt.yscale("log")
+    plt.legend(loc="lower left")
+    if cuts == False:
+        plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison.png")
+    else:
+        plt.savefig("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/plots/"+MC_file_id+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_allDLFs_datacomparison_cuts.png")
+    plt.show()
 
     print("done")
     print("time elapsed: ")
@@ -224,8 +225,8 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     print("plotting simulation against actual data...")
 
     #get calibration coefs
-    #with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef.json") as json_file:
-    with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef_trapE.json") as json_file:  
+    with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef.json") as json_file:
+    #with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/data/detectors/"+detector+"/calibration_coef_trapE.json") as json_file:  
         calibration_coefs = json.load(json_file)
         m = calibration_coefs['m']
         m_err = calibration_coefs['m_err']
@@ -239,14 +240,14 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     if cuts == False:
     
         # e_ftp, .h5 files - dont exist for V05266A
-        # df_total_h5 = read_all_dsp_h5(t2_folder_h5, cuts)
-        # e_ftp_data = df_total_h5['e_ftp']
-        # energy_data = (e_ftp_data-c)/m
+        df_total_h5 = read_all_dsp_h5(t2_folder_h5, cuts)
+        e_ftp_data = df_total_h5['e_ftp']
+        energy_data = (e_ftp_data-c)/m
 
         #trapE, .lh5 files
-        df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts)
-        trapE_data = df_total_lh5['trapE']
-        energy_data = (trapE_data-c)/m
+        # df_total_lh5 = read_all_dsp_lh5(t2_folder_lh5,cuts)
+        # trapE_data = df_total_lh5['trapE']
+        # energy_data = (trapE_data-c)/m
 
         #plot absolutes
         # bins_data = bins = np.arange(0, 450, binwidth)
@@ -344,17 +345,18 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
     }
 
     if cuts == False:
-        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_dlt_observables.json", "w") as outfile: 
+        with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_dlt_observables.json", "w") as outfile: 
             json.dump(dlt_observables, outfile)
     else:
-        with open("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_dlt_observables_cuts.json", "w") as outfile: 
+        with open("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_dlt_observables_cuts.json", "w") as outfile: 
             json.dump(dlt_observables, outfile)
 
 
     #calculate DATA/MC for each energy bin and export
     #only do this for best fit FCCD
     #if FCCD == 0.744 or FCCD == 0.698:
-    if FCCD == 0.73 or FCCD == 0.69:    
+    #if FCCD == 0.73 or FCCD == 0.69:   #i02160a
+    if FCCD == 1.06: #v05266a 
         print("")
         print("calculating data/MC ratios for best fit FCCD")
 
@@ -391,9 +393,9 @@ def process_FCCDs(FCCD, DLF, MC_file_id, detector, cuts, hdf5_path, binwidth):
         print(Data_MC_ratios_df)
 
         if cuts == False:
-            Data_MC_ratios_df.to_csv("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_DataMCRatios.csv", index=False)
+            Data_MC_ratios_df.to_csv("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_DataMCRatios.csv", index=False)
         else:
-            Data_MC_ratios_df.to_csv("detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_DataMCRatios_cuts.csv", index=False)
+            Data_MC_ratios_df.to_csv("/lfs/l1/legend/users/aalexander/Ba133_AV_char/AV_analysis/detectors/"+detector+"/"+MC_file_id+"_FCCD"+str(FCCD)+"mm_DLF"+str(DLF)+"_DataMCRatios_cuts.csv", index=False)
 
     if cuts == False:
         return energies, energy_data,  R_simdata_356_counts #for creating comparison graph
