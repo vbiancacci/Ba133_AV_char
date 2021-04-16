@@ -1,12 +1,19 @@
 import numpy as np
 import pandas as pd
 import math
-import sys 
+import sys
 import h5py
 import random
 import glob
 from datetime import datetime
 import json
+
+#####
+#functions from files
+sys.path.insert(1,'./tools')
+import tl-model as tl
+#####
+
 
 #FAST version of postproc code for FCCD and DLF implementation
 #takes ~ 12mins per fccd/dlf configuration
@@ -17,7 +24,7 @@ def main():
     t0 = datetime.now()
     dt_string = t0.strftime("%d/%m/%Y %H:%M:%S") # dd/mm/YY H:M:S
     print("")
-    print("date and time =", dt_string)	
+    print("date and time =", dt_string)
     print("")
 
     if(len(sys.argv) != 7):
@@ -38,11 +45,11 @@ def main():
     print("resolution smearing: ", smear)
     print("FCCD: ", fFCCD)
     print("DLF: ", fDLTp)
-    
+
     fDLT=fFCCD*fDLTp #dl thickness (mm)
 
     hdf5_path = "/lfs/l1/legend/users/aalexander/hdf5_output/" #general path to save large hdf5 files
-                 
+
     #____Open base MC file - for single file MC___
     # # have to open the input file with h5py (g4 doesn't write pandas-ready hdf5)
     # g4sfile = h5py.File(MC_raw, 'r')
@@ -58,7 +65,7 @@ def main():
     # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['x']['pages']),columns=['x']), lsuffix = '_caller', rsuffix = '_other')
     # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['y']['pages']),columns=['y']), lsuffix = '_caller', rsuffix = '_other')
     # g4sdf = g4sdf.join(pd.DataFrame(np.array(g4sntuple['z']['pages']),columns=['z']), lsuffix = '_caller', rsuffix = '_other')
-    
+
 
     #____Open base MC file - for combined MC files____ from using ../simulations/combine_simulations.py
     #if already combined MC pandas df, skip above, and open with pandas directly
@@ -70,7 +77,7 @@ def main():
     print(detector_hits)
     keys = detector_hits.keys()
     no_hits =  len(detector_hits)
-     
+
     #apply FCCD (DLT) cut
     detector_hits_FCCD = FCCD_cut(detector_hits, fFCCD, fDLT, conf_path)
     print("detector_hits_FCCD")
@@ -80,7 +87,7 @@ def main():
     #procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep'], as_index=False)['Edep'].sum())
     procdf = pd.DataFrame(detector_hits_FCCD.groupby(['event','volID','iRep', 'raw_MC_fileno'], as_index=False)['Edep'].sum())
     procdf = procdf.rename(columns={'iRep':'detID', 'Edep':'energy'})
-    procdf = procdf[procdf.energy!=0]    
+    procdf = procdf[procdf.energy!=0]
 
     # apply energy resolution function - explain these?
     if (smear=='g' or smear=='G'):
@@ -89,11 +96,11 @@ def main():
         procdf['energy']=procdf['energy']*1000+f_random(f_smear(procdf['energy']*1000)/2.355)
     else:
         procdf['energy']=procdf['energy']*1000
-   
+
     print(procdf['energy'])
 
     procdf.to_hdf(hdf5_path+'raw_MC_combined/processed/processed_detector_'+MC_file_id+'_'+smear+'_FCCD'+str(fFCCD)+"mm_DLF"+str(fDLTp)+'.hdf5', key='procdf', mode='w')
-    
+
     print("done")
     print("time elapsed: ")
     print(datetime.now() - t0)
@@ -102,7 +109,7 @@ def main():
 
 
 def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
-    
+
     #get geometry constants- read config geometry for detector
 
     with open(conf_path) as json_file:
@@ -110,16 +117,16 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
         geometry = json_geometry['geometry']
 
         R_b = radius_in_mm = geometry["radius_in_mm"] #crystal main/bottom radius
-        H = height_in_mm = geometry["height_in_mm"] # = cryystal height 
+        H = height_in_mm = geometry["height_in_mm"] # = cryystal height
         well_gap_in_mm = geometry["well"]["gap_in_mm"] #radius cavity
         r_c = well_radius_in_mm = geometry["well"]["radius_in_mm"] #radius cavity
-        taper_top_outer_angle_in_deg = geometry["taper"]["top"]["outer"]["angle_in_deg"] 
+        taper_top_outer_angle_in_deg = geometry["taper"]["top"]["outer"]["angle_in_deg"]
         H_u = taper_top_outer_height_in_mm = geometry["taper"]["top"]["outer"]["height_in_mm"] #height of top conical part
         groove_outer_radius_in_mm =  geometry["groove"]["outer_radius_in_mm"]
 
     R_u = R_b - H_u*math.tan(taper_top_outer_angle_in_deg*np.pi/180) #radius of top crystal
     h_c = H - well_gap_in_mm #cavity height
-    
+
     #these are the parameters required for code
     height = H
     radius = R_b
@@ -155,9 +162,9 @@ def FCCD_cut(detector_hits,fFCCD,fDLT, conf_path):
             [TwoDLine(np.array([boreRadius,0.]),np.array([boreRadius,boreDepth]))], #top bore hole
             [TwoDLine(np.array([boreRadius,boreDepth]),np.array([0.,boreDepth]))], #top bore hole
             ])
-    
+
     #add an "r" column to df (r^2=x^2+y^2)
-    r = np.sqrt((detector_hits['x'].to_numpy())**2 + (detector_hits['y'].to_numpy())**2) 
+    r = np.sqrt((detector_hits['x'].to_numpy())**2 + (detector_hits['y'].to_numpy())**2)
     detector_hits['r'] = r
     print("detector_hits with r: ", detector_hits)
 
@@ -195,16 +202,16 @@ class TwoDLine():
     def __init__(self, p1:np.array, p2:np.array):
         self.p1=p1
         self.p2=p2
-    
+
     def length(self):
         return sum((self.p1-self.p2)**2)
-    
+
     def distance(self, v:np.array):
         return self.p1+(self.p2-self.p1)* max(0.,min(sum((v-self.p1)*(self.p2-self.p1))/self.length(),1.))
-    
+
     def real_distance(self,v:np.array):
         return math.sqrt(length_np(self.distance(v)-v))
-   
+
     def projections(self, v:np.array):
         #= projection, returns coordinates of projected point
         #v = array of points
@@ -219,7 +226,7 @@ class TwoDLine():
         return projections
 
     def real_distances(self,v:np.array):
-        #returns distances from projected 
+        #returns distances from projected
         #v = array of points
         displacements = self.projections(v)-v
         real_distances = np.linalg.norm(displacements, axis = 1)
@@ -227,17 +234,17 @@ class TwoDLine():
 
 
 def GetMinimumDistances(chain,points:np.array):
-    
+
     if (len(chain)==0): #what is this condition for?
         return 0
 
     real_distances = chain[0][0].real_distances(points)
-    
+
     for entry in chain:
         real_distances = np.minimum(real_distances,entry[0].real_distances(points))
 
     return real_distances
- 
+
 
 def GetDistancesToNPlus(fNPlus,r,z):
     points = np.array(list(zip(r, z)))
@@ -270,13 +277,13 @@ def FCCDOuter(x,fDLT,fFCCD):
 
     #initialise array of CCEs
     CCEs = np.ones(x.shape[0])
-
+    CCEs=tl.models(modelname,fDLT,fFCCD)
     #Set CCE=0 for events in DL
-    CCEs = np.where(x <= fDLT, 0, CCEs)
+    #CCEs = np.where(x <= fDLT, 0, CCEs)
 
     #Set linear model CCE for events in TL
-    if fDLT != fFCCD: #DLF is not 1, i.e. there is a TL
-        CCEs = np.where((x>fDLT)&(x<fFCCD), 1./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
+    #if fDLT != fFCCD: #DLF is not 1, i.e. there is a TL
+    #    CCEs = np.where((x>fDLT)&(x<fFCCD), 1./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
 
     return CCEs
 
@@ -296,8 +303,7 @@ def GetCCEs(fNplus,fBore,r,z,fFCCD,fDLT):
 
     return CCEs
 
-   
+
 
 if __name__=="__main__":
     main()
-
