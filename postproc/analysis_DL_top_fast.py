@@ -261,13 +261,14 @@ def FCCDBore(x,fDLT,fFCCD):
 
     #initialise array of CCEs
     CCEs = np.ones(x.shape[0])
+    CCEs=tl.BoreModels(modelname,fDLT,fFCCD)
 
     #Set CCE=0 for events in DL
-    CCEs = np.where(x <= fDLT/2, 0, CCEs)
+    #CCEs = np.where(x <= fDLT/2, 0, CCEs)
 
     #Set linear model CCE for events in TL
-    if fDLT != fFCCD: #DLF is not 1, i.e. there is a TL
-        CCEs = np.where((x>fDLT/2)&(x<fFCCD/2), 2./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
+    #if fDLT != fFCCD: #DLF is not 1, i.e. there is a TL
+    #    CCEs = np.where((x>fDLT/2)&(x<fFCCD/2), 2./(fFCCD-fDLT)*x-fDLT/(fFCCD-fDLT), CCEs)
 
     return CCEs
 
@@ -277,7 +278,7 @@ def FCCDOuter(x,fDLT,fFCCD):
 
     #initialise array of CCEs
     CCEs = np.ones(x.shape[0])
-    CCEs=tl.models(modelname,fDLT,fFCCD)
+    CCEs=tl.OuterModels(modelname,fDLT,fFCCD)
     #Set CCE=0 for events in DL
     #CCEs = np.where(x <= fDLT, 0, CCEs)
 
